@@ -2,6 +2,9 @@
 
 class WalletController extends \BaseController {
 
+	$deposit = 'deposit';
+	$withdraw = 'withdraw';
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -110,7 +113,7 @@ class WalletController extends \BaseController {
 
 		$date = new DateTime();
 
-		if($data['type']=='deposit'||$data['type']=='withdraw') {
+		if($data['type']==$withdraw||$data['type']==$deposit) {
 			Wallettrans::create(array(
 				'wallet_id' => $id,
 				'amount' => $data['amount'],
@@ -118,7 +121,7 @@ class WalletController extends \BaseController {
 				'type' => $data['type']));
 
 			$wallet = Wallet::find($id);
-			if($data['type']=='deposit') {
+			if($data['type']==$deposit) {
 				$wallet->amount += $data['amount'];
 			} else {
 				$wallet->amount -= $data['amount'];

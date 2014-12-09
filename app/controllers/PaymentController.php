@@ -3,6 +3,10 @@
 class PaymentController extends \BaseController {
 
 	public $restful = true;
+
+	$wait_customer = 'wait for customer authotization';
+	$wait_merchant = 'wait for merchant validation';
+	$success = 'success';
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -62,7 +66,7 @@ class PaymentController extends \BaseController {
 			'merchant_id' => $data['merchant_id'],
 			'order_id' => $data['order_id'],
 			'amount' => $data['amount'],
-			'status' => 'pending',
+			'status' => $wait_customer,
 			'time' => $date->format('Y-m-d')
 			));
 
@@ -86,7 +90,7 @@ class PaymentController extends \BaseController {
 	        $payment = Payment::find($id);
 	        $response['payment'][] = [
 	            'id' => $payment->id,
-	            'owner_id' => $payment->merchant_id,
+	            'merchant_id' => $payment->merchant_id,
 	            'order_id' => $payment->order_id,
 	            'amount' => $payment->amount,
 	            'status' => $payment->status,
@@ -121,8 +125,18 @@ class PaymentController extends \BaseController {
 	public function update($id)
 	{
 		$payment = Payment::find($id);
-
-		$payment->status = 'success';
+		$user = Auth::user();
+		if($user->email == $payment->merchant_email) {
+			if($payment->status == $wait_merchant) {
+				$payment->status = $success;
+			}
+		}
+		else if($user->email == $payment->customer_email) {
+			if($payment->status == $wait_customer) {
+				$payment->status = $wait_merchant;
+			}
+		}
+		$payment->save();
 
 		return Redirect::route('payments.index');
 	}

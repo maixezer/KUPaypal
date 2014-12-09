@@ -1,7 +1,7 @@
 @extends('layout.default')
 @section('content')
 
-        {{ Form::open( array('route' => 'users.store' , 'method' => 'post') )}}
+        {{ Form::open( array('route' => 'user-sign-up-post' , 'method' => 'post') )}}
 	          <span class="imt">*</span><span > Email</span>
 	          <input type="email" class="form-control" placeholder="example@example.com" name="email" {{ (Input::old('email')) ? ' value="' . e(Input::old('email')) . '"' : '' }} autofocus/>
 	          @if($errors->has('email'))

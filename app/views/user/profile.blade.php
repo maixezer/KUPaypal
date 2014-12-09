@@ -1,15 +1,14 @@
 @extends('layout.default')
 @section('content')
 		<?php
-	        $user = User::find($id);
+	        $user = Auth::user();
 		    $result = explode('-' , $user->date_of_birth);
-		    $auth = DB::table('authenticate')->where('user_id',$id)->first();
 		?>
 
-		{{ Form::open(array('route' => array('api.v1.users.update', $id ) , 'method' => 'put')) }}
+		{{ Form::open(array('route' => array('users.update', $id ) , 'method' => 'put')) }}
 	        
 		    	  <span > Email</span>
-		          <input type="email" class="form-control" placeholder="example@example.com" name="email" value="{{ $auth->email }}" disabled/>
+		          <input type="email" class="form-control" placeholder="example@example.com" name="email" value="{{ $user->email }}" disabled/>
 				  </br>
 
 				  <span > First Name</span>

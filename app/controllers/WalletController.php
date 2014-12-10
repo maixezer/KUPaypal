@@ -101,6 +101,7 @@ class WalletController extends \BaseController {
 	 */
 	public function update($id)
 	{
+		$user = Auth::user();
 		$data = Input::all();
 
 		$date = new DateTime();
@@ -113,41 +114,16 @@ class WalletController extends \BaseController {
 				'type' => $data['type']));
 
 			$wallet = Wallet::find($id);
+			$result = false;
 			if($data['type']==$deposit) {
-				$wallet->amount += $data['amount'];
+				$result = $wallet->deposit($user, $data['amount']);
 			} else {
-				$wallet->amount -= $data['amount'];
+				$result = $wallet->withdraw($user, $data['amount']);
 			}
-			$wallet->save();
-
-			return Redirect::route('wallets.show', array('id' => $id));
-		} else {
-			return;
+			if($result)
+				return Redirect::route('wallets.show', array('id' => $id));
 		}
-	}
-
-	public function deposite($amount) {
-		$user = Auth::user();
-		if($user) {
-			$wallet = getWalletByOwner($user->id);
-			$wallet->amount += $amount;
-			$wallet->save();
-			return Redirect::route('wallets.index');
-		}
-		return Redirect::intend('/');
-	}
-
-	public function withdraw($amount) {
-		$user = Auth::user();
-		if($user) {
-			$wallet = getWalletByOwner($user->id);
-			if($wallet->amount < $amount) 
-				return Redirect::intend('/');
-			$wallet->amount -= $amount;
-			$wallet->save();
-			return Redirect::route('wallets.index');
-		}
-		return Redirect::intend('/');
+		return;
 	}
 
 	/**

@@ -252,5 +252,9 @@ class UserController extends \BaseController {
 		}
 	}
 
+	public function getSignOut() {
+		Auth::logout();
+		return Redirect::route('user-sign-in');
+	}
 
 }

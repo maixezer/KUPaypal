@@ -27,18 +27,18 @@ Route::get('/', function()
 		*/
 		Route::group( array('before' => 'csrf') , function(){
 
-			Route::post('/user/sign_in',array(
+			Route::post('/users/sign_in',array(
 				'as' => 'user-sign-in-post',
 				'uses' => 'UserController@postSignIn'
 			));
 
-			Route::post('/user/register', array(
+			Route::post('/uses/register', array(
 				'as' => 'user-sign-up-post',
 				'uses' => 'UserController@postSignUp'
 			));
 		});
 		
-		Route::get('/user/sign_in' ,array(
+		Route::get('/users/sign_in' ,array(
 			'as' => 'user-sign-in',
 			'uses' => 'UserController@getSignIn'
 		));
@@ -46,7 +46,7 @@ Route::get('/', function()
 		/*
 			create and store user
 		*/
-		Route::get('/user/register', array(
+		Route::get('/users/register', array(
 			'as' => 'user-sign-up',
 			'uses' => 'UserController@getSignUp'
 		));
@@ -59,9 +59,99 @@ Route::get('/', function()
 		Authenticated group
 	*/
 	Route::group(array('before' => 'auth'),function(){
-		Route::resource('users', 'UserController');
-		Route::resource('wallets','WalletController');
-		Route::resource('payment', 'PaymentController');
+		// Route::resource('users', 'UserController');
+
+		/*
+			Users group
+			create and store users belong to guest group.
+		*/
+		Route::get('/users', array(
+			'as' => 'users.index',
+			'uses' => 'UserController@index'
+		));
+		Route::get('/users/{users}', array(
+			'as' => 'users.show',
+			'uses' => 'UserController@show'
+		));
+		Route::get('/users/{users}/edit', array(
+			'as' => 'users.edit',
+			'uses' => 'UserController@edit'
+		));
+		Route::put('/users/{users}', array(
+			'as' => 'users.update',
+			'uses' => 'UserController@update'
+		));
+		Route::delete('/users/{users}', array(
+			'as' => 'users.destroy',
+			'uses' => 'UserController@destroy'
+		));
+
+		//Route::resource('wallets','WalletController');
+
+		/*
+			wallet & wallet transaction group
+		*/
+		Route::get('/wallets', array(
+			'as' => 'wallets.index',
+			'uses' => 'WalletController@index'
+		));
+		Route::post('/wallets', array(
+			'as' => 'wallets.store',
+				'uses' => 'WalletController@store'
+		));
+		Route::get('/wallets/{wallets}', array(
+			'as' => 'wallets.show',
+			'uses' => 'WalletController@show'
+		));
+		Route::get('/wallets/{wallets}/edit', array(
+			'as' => 'wallets.edit',
+			'uses' => 'WalletController@edit'
+		));
+		Route::put('/wallets/{wallets}', array(
+			'as' => 'wallets.update',
+			'uses' => 'WalletController@update'
+		));
+		Route::delete('/wallets/{wallets}', array(
+			'as' => 'wallets.destroy',
+			'uses' => 'wallets.destroy'
+		));
+
+		//Route::resource('payment', 'PaymentController');
+
+		/*
+			Payment group
+		*/
+		Route::get('/payment', array(
+			'as' => 'payment.index',
+			'uses' => 'PaymentController@index'
+		));
+		Route::post('/payment', array(
+			'as' => 'payment.store',
+			'uses' => 'PaymentController@store'
+		));
+		Route::get('/payment/{payment}', array(
+			'as' => 'payment.show',
+			'uses' => 'PaymentController@show'
+		));
+		Route::put('/payment/{payment}', array(
+			'as' => 'payment.update',
+			'uses' => 'PaymentController@update'
+		));
+		Route::delete('/payment/{payment}', array(
+			'as' => 'payment.delete',
+			'uses' => 'PaymentController@destroy'
+		));
+
+
+		/*
+			sign out route
+		*/
+		Route::get('/users/sign_out', array(
+			'as' => 'user-sign-out',
+			'uses' => 'UserController@getSignOut'
+		));
+
+
 		/*
 			CSRF protection group
 		*/

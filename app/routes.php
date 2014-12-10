@@ -15,12 +15,13 @@ Route::get('/', function()
 {
 	return View::make('hello');
 });
-
+			
+	
 /*
 		Unauthenticated gro//up
 	*/
 	Route::group( array('before' => 'guest'), function(){
-
+		
 		/*
 			CSRF protection group
 		*/
@@ -45,7 +46,7 @@ Route::get('/', function()
 			'uses' => 'UserController@getSignUp'
 		));
 		Route::post('/user/register', array(
-				'as' => 'users-sign-up-post',
+				'as' => 'user-sign-up-post',
 				'uses' => 'UserController@postSignUp'
 		));
 
@@ -57,7 +58,9 @@ Route::get('/', function()
 		Authenticated group
 	*/
 	Route::group(array('before' => 'auth'),function(){
-
+		Route::resource('users', 'UserController');
+		Route::resource('wallets','WalletController');
+		Route::resource('payment', 'PaymentController');
 		/*
 			CSRF protection group
 		*/
@@ -88,7 +91,7 @@ Route::get('/', function()
 			// 		'as' => 'users.destroy',
 			// 		'uses' => 'UserController@destroy'
 			// ));
-			Route::resource('users', 'UserController');
+			// Route::resource('users', 'UserController');
 
 
 			/*
@@ -143,8 +146,8 @@ Route::get('/', function()
 			// 		'uses' => 'PaymentController@destroy'
 			// ));
 
-			Route::resource('wallets','WalletController');
-			Route::resource('payment', 'PaymentController');
+			// Route::resource('wallets','WalletController');
+			// Route::resource('payment', 'PaymentController');
 
 
 		});

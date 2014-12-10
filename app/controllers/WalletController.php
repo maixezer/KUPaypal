@@ -2,6 +2,8 @@
 
 class WalletController extends \BaseController {
 
+	public $restful = true;
+
 	$deposit = 'deposit';
 	$withdraw = 'withdraw';
 

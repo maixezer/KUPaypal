@@ -2,32 +2,34 @@
 
 class UserController extends \BaseController {
 
+	public $restful = true;
+
 	public function index()
 	{
-		// try{
-	 //        $response = [
-	 //            'users' => []
-	 //        ];
-	 //        $statusCode = 200;
-	 //        $users = User::all();
+		try{
+	        $response = [
+	            'users' => []
+	        ];
+	        $statusCode = 200;
+	        $users = User::all();
 	 
-	 //        foreach($users as $user){
+	        foreach($users as $user){
 	 
-	 //            $response['users'][] = [
-	 //                'id' => $user->id,
-	 //                'first_name' => $user->first_name,
-	 //                'last_name' => $user->last_name,
-	 //                'date_of_birth' => $user->date_of_birth,
-	 //                'phone' => $user->phone,
-	 //                'address' => $user->address
-	 //            ];
-	 //        }
+	            $response['users'][] = [
+	                'id' => $user->id,
+	                'first_name' => $user->first_name,
+	                'last_name' => $user->last_name,
+	                'date_of_birth' => $user->date_of_birth,
+	                'phone' => $user->phone,
+	                'address' => $user->address
+	            ];
+	        }
 	
-	 //    }catch (Exception $e){
-	 //        $statusCode = 404;
-	 //    }finally{
-	 //        return Response::json($response, $statusCode);
-	 //    }
+	    }catch (Exception $e){
+	        $statusCode = 404;
+	    }finally{
+	        return Response::json($response, $statusCode);
+	    }
 	}
 
 

@@ -63,7 +63,8 @@ class WalletController extends \BaseController {
 	            'wallet' => []
 	        ];
 	        $statusCode = 200;
-	        $wallet = Wallet::find($id);
+	        $wallet = getWalletByOwner($id);
+	        // $wallet = Wallet::find($id);
 	 
 	 
 	        $response['wallet'][] = [
@@ -125,6 +126,29 @@ class WalletController extends \BaseController {
 		}
 	}
 
+	public function deposite($amount) {
+		$user = Auth::user();
+		if($user) {
+			$wallet = getWalletByOwner($user->id);
+			$wallet->amount += $amount;
+			$wallet->save();
+			return Redirect::route('wallets.index');
+		}
+		return Redirect::intend('/');
+	}
+
+	public function withdraw($amount) {
+		$user = Auth::user();
+		if($user) {
+			$wallet = getWalletByOwner($user->id);
+			if($wallet->amount < $amount) 
+				return Redirect::intend('/');
+			$wallet->amount -= $amount;
+			$wallet->save();
+			return Redirect::route('wallets.index');
+		}
+		return Redirect::intend('/');
+	}
 
 	/**
 	 * Remove the specified resource from storage.

@@ -128,20 +128,10 @@ class PaymentController extends \BaseController {
 	{
 		$payment = Payment::find($id);
 		$user = Auth::user();
-		if($user->email == $payment->merchant_email) {
-			if($payment->status == $wait_merchant) {
-				$payment->status = $success;
-				// money tranferred.
-			}
-		}
-		else if($user->email == $payment->customer_email) {
-			if($payment->status == $wait_customer) {
-				$payment->status = $wait_merchant;
-				//wait for merchant to validate a payment.
-			}
-		}
-		$payment->save();
+		$result = $payment->user_auth($user, $payment);
 
+		if($result)
+			return Redirect::route('payments.index');
 		return Redirect::route('payments.index');
 	}
 

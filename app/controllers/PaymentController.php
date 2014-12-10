@@ -15,6 +15,7 @@ class PaymentController extends \BaseController {
 	public function index()
 	{
 		try{
+			$user = Auth::user();
 	        $response = [
 	            'payments' => []
 	        ];
@@ -22,15 +23,16 @@ class PaymentController extends \BaseController {
 	        $payments = Payment::all();
 	 
 	        foreach($payments as $payment){
-	 
-	            $response['payments'][] = [
-	                'id' => $payment->id,
-	                'owner_id' => $payment->merchant_id,
-	                'order_id' => $payment->order_id,
-	                'amount' => $payment->amount,
-	                'status' => $payment->status,
-	                'time' => $payment->time
-	            ];
+	 			if ($user->email == $payment->merchant_email || $user->email == $payment->customer_email) {
+	            	$response['payments'][] = [
+	                	'id' => $payment->id,
+	                	'owner_id' => $payment->merchant_id,
+	                	'order_id' => $payment->order_id,
+	                	'amount' => $payment->amount,
+	                	'status' => $payment->status,
+	                	'time' => $payment->time
+	            	];
+	        	}
 	        }
 	    }catch (Exception $e){
 	        $statusCode = 404;
@@ -47,7 +49,7 @@ class PaymentController extends \BaseController {
 	 */
 	public function create()
 	{
-		//
+		// view that have information to create a payment
 	}
 
 
@@ -112,7 +114,7 @@ class PaymentController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		
+		// didn't use, because we only need customer authorization and merchant validation.
 	}
 
 
@@ -129,11 +131,13 @@ class PaymentController extends \BaseController {
 		if($user->email == $payment->merchant_email) {
 			if($payment->status == $wait_merchant) {
 				$payment->status = $success;
+				// money tranferred.
 			}
 		}
 		else if($user->email == $payment->customer_email) {
 			if($payment->status == $wait_customer) {
 				$payment->status = $wait_merchant;
+				//wait for merchant to validate a payment.
 			}
 		}
 		$payment->save();
@@ -150,7 +154,7 @@ class PaymentController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		// didn't have to remove/destroy a payment. because we can mark it to be a cancelled or reversed one.
 	}
 
 

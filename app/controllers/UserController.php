@@ -40,7 +40,7 @@ class UserController extends \BaseController {
 	 */
 	public function create()
 	{
-		
+		// delegate to get sign up function.
 	}
 
 
@@ -51,7 +51,7 @@ class UserController extends \BaseController {
 	 */
 	public function store()
 	{
-		
+		// delegate to post sign up function.
 	}
 
 
@@ -111,7 +111,7 @@ class UserController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$user = User::find($id);
+		$user = Auth::user();
 
 		$dob = new DateTime(Input::get('year'). '-' .Input::get('month') . '-' . Input::get('day'));
 
@@ -145,6 +145,10 @@ class UserController extends \BaseController {
 	}
 
 
+	public function getDestroy() {
+		// create a view that wait for user confirmation.
+	}
+
 	/**
 	 * Remove the specified resource from storage.
 	 *
@@ -153,7 +157,7 @@ class UserController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		// handle http delete request to destroy user.
 	}
 
 	public function getSignIn() {

@@ -38,26 +38,14 @@ class WalletController extends \BaseController {
 	    }
 	}
 
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
 	public function create()
 	{
-		
+		// didn't have a view to handle this because wallet is create together with user.
 	}
 
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
 	public function store()
 	{
-
+		// same reason from create function.
 	}
 
 
@@ -70,6 +58,7 @@ class WalletController extends \BaseController {
 	public function show($id)
 	{
 		try{
+			$user = Auth::user();
 	        $response = [
 	            'wallet' => []
 	        ];
@@ -145,7 +134,7 @@ class WalletController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		// do with destroy user.
 	}
 
 

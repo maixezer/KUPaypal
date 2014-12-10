@@ -31,6 +31,11 @@ Route::get('/', function()
 				'as' => 'user-sign-in-post',
 				'uses' => 'UserController@postSignIn'
 			));
+
+			Route::post('/user/register', array(
+				'as' => 'user-sign-up-post',
+				'uses' => 'UserController@postSignUp'
+			));
 		});
 		
 		Route::get('/user/sign_in' ,array(
@@ -44,10 +49,6 @@ Route::get('/', function()
 		Route::get('/user/register', array(
 			'as' => 'user-sign-up',
 			'uses' => 'UserController@getSignUp'
-		));
-		Route::post('/user/register', array(
-				'as' => 'user-sign-up-post',
-				'uses' => 'UserController@postSignUp'
 		));
 
 	});

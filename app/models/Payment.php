@@ -11,7 +11,7 @@ class Payment extends Eloquent {
 		if($user->email == $this->merchant_email) {
 			$result = $this->merchant_validate($user);
 		}
-		else if($this->status == 'pending') {
+		else if($this->status == 'wait for customer authotization') {
 			$result = $this->customer_authorize($user);
 		}
 		if($result) {
@@ -27,6 +27,7 @@ class Payment extends Eloquent {
 			// money tranferred.
 			$merchant_wallet = Wallet::where('owner_id', '=', $user->id)->first();
 			$merchant_wallet->balance += $this->amount;
+			$merchant_wallet->save();
 			return true;
 		}
 		return false;

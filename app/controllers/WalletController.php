@@ -11,15 +11,12 @@ class WalletController extends \BaseController {
 	 */
 	public function index()
 	{
-		$user = Auth::user();
 		try{
-	        $response = [
-	            'wallets' => []
-	        ];
+			$user = Auth::user();
 	        $statusCode = 200;
 	        $wallet = Wallet::where('owner_id', '=', $user->id)->first();
 	 
-	        $response['wallets'][] = [
+	        $response = [
 	            'id' => $wallet->id,
 	            'owner_id' => $wallet->owner_id,
 	            'balance'  => $wallet->balance

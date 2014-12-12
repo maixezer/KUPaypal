@@ -65,19 +65,34 @@ class PaymentController extends \BaseController {
 		$data = Input::all();
 
 		$date = new DateTime();
+		// $text = [
+		// 	'text' => $data['merchant_email']
+		// ];
+		// return Response::json($text,200);
+		$id = DB::table('payments')->insertGetId(
+			array(
+				'merchant_email' => $data['merchant_email'],
+				'merchant_id' => $data['merchant_id'],
+				'customer_email' => 'none',
+				'order_id' => $data['order_id'],
+				'amount' => $data['amount'],
+				'status' => 'wait for customer authotization',
+				'time' => $date->format('Y-m-d')
+			)
+		);
 
-		Payment::create(array(
-			'merchant_email' => $data['merchant_email'],
-			'order_id' => $data['order_id'],
-			'amount' => $data['amount'],
-			'status' => $wait_customer,
-			'time' => $date->format('Y-m-d')
-		));
-		$payment = Payment::where('merchant_email', '=', $data['merchant_email'])
-			->where('order_id', '=', $data['order_id'])->first();
-		if($payment) {
+		// Payment::create(array(
+		// 	'merchant_email' => $data['merchant_email'],
+		// 	'order_id' => $data['order_id'],
+		// 	'amount' => $data['amount'],
+		// 	'status' => 'wait for merchant validation',
+		// 	'time' => $date->format('Y-m-d')
+		// ));
+		// $payment = Payment::where('merchant_email', '=', $data['merchant_email'])
+		// 	->where('order_id', '=', $data['order_id'])->first();
+		if($id>0) {
 			$response = Response::make('', 201);
-			$response->header('Location', $url.'/'.$payment->id);
+			$response->header('Location', $url.'/'.$id);
 			return $response;
 		}
 		return Response::make('', 409);

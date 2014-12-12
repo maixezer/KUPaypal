@@ -8,13 +8,10 @@ class UserController extends \BaseController {
 	{
 		try{
 			$user = Auth::user();
-	        $response = [
-	            'users' => []
-	        ];
 	        $statusCode = 200;
 	        $users = User::where('id', '=', $user->id);
 	 
-	        $response['users'][] = [
+	        $response = [
 	            'id' => $user->id,
 	            'first_name' => $user->first_name,
 	            'last_name' => $user->last_name,

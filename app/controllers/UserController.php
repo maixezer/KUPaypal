@@ -7,23 +7,21 @@ class UserController extends \BaseController {
 	public function index()
 	{
 		try{
+			$user = Auth::user();
 	        $response = [
 	            'users' => []
 	        ];
 	        $statusCode = 200;
-	        $users = User::all();
+	        $users = User::where('id', '=', $user->id);
 	 
-	        foreach($users as $user){
-	 
-	            $response['users'][] = [
-	                'id' => $user->id,
-	                'first_name' => $user->first_name,
-	                'last_name' => $user->last_name,
-	                'date_of_birth' => $user->date_of_birth,
-	                'phone' => $user->phone,
-	                'address' => $user->address
-	            ];
-	        }
+	        $response['users'][] = [
+	            'id' => $user->id,
+	            'first_name' => $user->first_name,
+	            'last_name' => $user->last_name,
+	            'date_of_birth' => $user->date_of_birth,
+	            'phone' => $user->phone,
+	            'address' => $user->address
+	        ];
 	
 	    }catch (Exception $e){
 	        $statusCode = 404;
@@ -97,9 +95,9 @@ class UserController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id)
+	public function edit()
 	{
-		return View::make('user.profile' , array('id' => $id));
+		return View::make('user.profile');
 	}
 
 
@@ -109,7 +107,7 @@ class UserController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update()
 	{
 		$user = Auth::user();
 

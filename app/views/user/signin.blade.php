@@ -21,7 +21,7 @@
             <input type="submit" name="submit" class="btn btn-success btn-lg marginbot-50 btn-block" value="Sign In" >
             </br>
             <span> Not a member yet?</span>
-            <span style="cursor:pointer;" class="text-info" onClick="{{ URL::route('user-sign-up')}}">Sign Up!</span>
+            <span style="cursor:pointer;" class="text-info"><a href="{{ URL::route('user-sign-up')}}">Sign Up!</a></span>
           </div>
 
           {{ Form::token() }}

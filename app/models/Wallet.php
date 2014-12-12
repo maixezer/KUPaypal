@@ -6,11 +6,22 @@ class Wallet extends Eloquent {
 
 	protected $fillable = array('owner_id','balance');
 
-	public function deposite($user, $amount) {
-		if($user&&$amount) {
-			$wallet = getWalletByOwner($user->id);
-			$wallet->amount += $amount;
-			$wallet->save();
+	// can't create final attribute
+	// protected $deposit = 'deposit';
+	// protected $withdraw = 'withdraw';
+
+	public function deposit($user, $amount) {
+		if($user->id!=$this->owner_id) return false;
+		$date = new DateTime();
+		Wallettrans::create( array(
+			'wallet_id' => $this->id,
+			'amount' => $amount,
+			'time' => $date->format('Y-m-d'),
+			'type' => 'deposit'
+		));
+		if($amount) {
+			$this->balance += $amount;
+			$this->save();
 			return true;
 		}
 		return false;
@@ -18,18 +29,13 @@ class Wallet extends Eloquent {
 
 	public function withdraw($user, $amount) {
 		if($user&&$amount) {
-			$wallet = getWalletByOwner($user->id);
-			if($wallet->balance >= $amount) {
-				$wallet->balance -= $amount;
-				$wallet->save();
+			if($this->balance >= $amount) {
+				$this->balance -= $amount;
+				$this->save();
 				return true;
 			}
 		}
 		return false;
-	}
-
-	private function getWalletByOwner($id) {
-		return Wallet::where('owner_id', '=', $id)->first();
 	}
 
 }

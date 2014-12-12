@@ -69,11 +69,7 @@ Route::get('/', function()
 			'as' => 'users.index',
 			'uses' => 'UserController@index'
 		));
-		Route::get('/users/{users}', array(
-			'as' => 'users.show',
-			'uses' => 'UserController@show'
-		));
-		Route::get('/users/{users}/edit', array(
+		Route::get('/users/edit', array(
 			'as' => 'users.edit',
 			'uses' => 'UserController@edit'
 		));
@@ -99,10 +95,6 @@ Route::get('/', function()
 			'as' => 'wallets.store',
 				'uses' => 'WalletController@store'
 		));
-		Route::get('/wallets/{wallets}', array(
-			'as' => 'wallets.show',
-			'uses' => 'WalletController@show'
-		));
 		Route::get('/wallets/{wallets}/edit', array(
 			'as' => 'wallets.edit',
 			'uses' => 'WalletController@edit'
@@ -113,7 +105,11 @@ Route::get('/', function()
 		));
 		Route::delete('/wallets/{wallets}', array(
 			'as' => 'wallets.destroy',
-			'uses' => 'wallets.destroy'
+			'uses' => 'WalletController@destroy'
+		));
+		Route::get('/wallets/deposit', array(
+			'as' => 'wallets.deposit',
+			'uses' => 'WalletController@deposit'
 		));
 
 		//Route::resource('payment', 'PaymentController');
@@ -140,6 +136,10 @@ Route::get('/', function()
 		Route::delete('/payment/{payment}', array(
 			'as' => 'payment.delete',
 			'uses' => 'PaymentController@destroy'
+		));
+		Route::get('payment/{payment}/authorize', array(
+			'as' => 'payment.authorize',
+			'uses' => 'PaymentController@authorize'
 		));
 
 

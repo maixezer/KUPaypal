@@ -4,9 +4,9 @@ class PaymentController extends \BaseController {
 
 	public $restful = true;
 
-	$wait_customer = 'wait for customer authotization';
-	$wait_merchant = 'wait for merchant validation';
-	$success = 'success';
+	private $wait_customer = 'wait for customer authotization';
+	private $wait_merchant = 'wait for merchant validation';
+	private $success = 'success';
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -60,19 +60,27 @@ class PaymentController extends \BaseController {
 	 */
 	public function store()
 	{
+		$url = Request::url();
+
 		$data = Input::all();
 
 		$date = new DateTime();
 
 		Payment::create(array(
-			'merchant_id' => $data['merchant_id'],
+			'merchant_email' => $data['merchant_email'],
 			'order_id' => $data['order_id'],
 			'amount' => $data['amount'],
 			'status' => $wait_customer,
 			'time' => $date->format('Y-m-d')
-			));
-
-		return Redirect::route('payments.index');
+		));
+		$payment = Payment::where('merchant_email', '=', $data['merchant_email'])
+			->where('order_id', '=', $data['order_id'])->first();
+		if($payment) {
+			$response = Response::make('', 201);
+			$response->header('Location', $url.'/'.$payment->id);
+			return $response;
+		}
+		return Response::make('', 409);
 	}
 
 
@@ -126,13 +134,18 @@ class PaymentController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$payment = Payment::find($id);
-		$user = Auth::user();
-		$result = $payment->user_auth($user, $payment);
 
-		if($result)
-			return Redirect::route('payments.index');
-		return Redirect::route('payments.index');
+	}
+
+	public function authorize($id) {
+		$payment = Payment::find($id);
+		var_dump($payment);
+		$user = Auth::user();
+		$result = $payment->user_auth($user);
+		if($result) {
+			return Redirect::route('payment.show', array('id' => $id));
+		}
+		return Redirect::route('payment.show', array('id' => $id));
 	}
 
 

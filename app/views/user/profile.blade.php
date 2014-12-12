@@ -5,7 +5,7 @@
 		    $result = explode('-' , $user->date_of_birth);
 		?>
 
-		{{ Form::open(array('route' => array('users.update', $id ) , 'method' => 'put')) }}
+		{{ Form::open(array('route' => array('users.update') , 'method' => 'put')) }}
 	        
 		    	  <span > Email</span>
 		          <input type="email" class="form-control" placeholder="example@example.com" name="email" value="{{ $user->email }}" disabled/>

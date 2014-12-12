@@ -4,9 +4,6 @@ class WalletController extends \BaseController {
 
 	public $restful = true;
 
-	$deposit = 'deposit';
-	$withdraw = 'withdraw';
-
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -14,21 +11,19 @@ class WalletController extends \BaseController {
 	 */
 	public function index()
 	{
+		$user = Auth::user();
 		try{
 	        $response = [
 	            'wallets' => []
 	        ];
 	        $statusCode = 200;
-	        $wallets = Wallet::all();
+	        $wallet = Wallet::where('owner_id', '=', $user->id)->first();
 	 
-	        foreach($wallets as $wallet){
-	 
-	            $response['wallets'][] = [
-	                'id' => $wallet->id,
-	                'owner_id' => $wallet->owner_id,
-	                'balance'  => $wallet->balance
-	            ];
-	        }
+	        $response['wallets'][] = [
+	            'id' => $wallet->id,
+	            'owner_id' => $wallet->owner_id,
+	            'balance'  => $wallet->balance
+	        ];
 	 
 	 
 	    }catch (Exception $e){
@@ -57,27 +52,7 @@ class WalletController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		try{
-			$user = Auth::user();
-	        $response = [
-	            'wallet' => []
-	        ];
-	        $statusCode = 200;
-	        $wallet = getWalletByOwner($id);
-	        // $wallet = Wallet::find($id);
-	 
-	 
-	        $response['wallet'][] = [
-	            'id' => $wallet->id,
-	            'owner_id' => $wallet->owner_id,
-	            'balance'  => $wallet->balance
-	        ];
-
-	    }catch (Exception $e){
-	        $statusCode = 404;
-	    }finally{
-	        return Response::json($response, $statusCode);
-	    }
+		
 	}
 
 
@@ -101,29 +76,14 @@ class WalletController extends \BaseController {
 	 */
 	public function update($id)
 	{
+		
+	}
+
+	public function deposit() {
 		$user = Auth::user();
-		$data = Input::all();
-
-		$date = new DateTime();
-
-		if($data['type']==$withdraw||$data['type']==$deposit) {
-			Wallettrans::create(array(
-				'wallet_id' => $id,
-				'amount' => $data['amount'],
-				'time' => $date->format('Y-m-d'),
-				'type' => $data['type']));
-
-			$wallet = Wallet::find($id);
-			$result = false;
-			if($data['type']==$deposit) {
-				$result = $wallet->deposit($user, $data['amount']);
-			} else {
-				$result = $wallet->withdraw($user, $data['amount']);
-			}
-			if($result)
-				return Redirect::route('wallets.show', array('id' => $id));
-		}
-		return;
+		$wallet = Wallet::where('owner_id', '=', $user->id)->first();
+		$result = $wallet->deposit($user, 1000);
+		return Redirect::route('wallets.index');
 	}
 
 	/**

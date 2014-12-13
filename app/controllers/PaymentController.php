@@ -26,7 +26,8 @@ class PaymentController extends \BaseController {
 	 			if ($user->email == $payment->merchant_email || $user->email == $payment->customer_email) {
 	            	$response['payments'][] = [
 	                	'id' => $payment->id,
-	                	'owner_id' => $payment->merchant_id,
+	                	'merchant_email' => $payment->merchant_email,
+	                	'customer_email' => $payment->customer_email,
 	                	'order_id' => $payment->order_id,
 	                	'amount' => $payment->amount,
 	                	'status' => $payment->status,
@@ -60,42 +61,38 @@ class PaymentController extends \BaseController {
 	 */
 	public function store()
 	{
-		$url = Request::url();
+		$id = 0;
+		$statusCode = 201
+		$responseBody = '';
+		try{
+			$url = Request::url();
 
-		$data = Input::all();
+			$data = Input::all();
 
-		$date = new DateTime();
-		// $text = [
-		// 	'text' => $data['merchant_email']
-		// ];
-		// return Response::json($text,200);
-		$id = DB::table('payments')->insertGetId(
-			array(
-				'merchant_email' => $data['merchant_email'],
-				'merchant_id' => $data['merchant_id'],
-				'customer_email' => 'none',
-				'order_id' => $data['order_id'],
-				'amount' => $data['amount'],
-				'status' => 'wait for customer authotization',
-				'time' => $date->format('Y-m-d')
-			)
-		);
+			$date = new DateTime();
 
-		// Payment::create(array(
-		// 	'merchant_email' => $data['merchant_email'],
-		// 	'order_id' => $data['order_id'],
-		// 	'amount' => $data['amount'],
-		// 	'status' => 'wait for merchant validation',
-		// 	'time' => $date->format('Y-m-d')
-		// ));
-		// $payment = Payment::where('merchant_email', '=', $data['merchant_email'])
-		// 	->where('order_id', '=', $data['order_id'])->first();
-		if($id>0) {
-			$response = Response::make('', 201);
-			$response->header('Location', $url.'/'.$id);
-			return $response;
+			$id = DB::table('payments')->insertGetId(
+				array(
+					'merchant_email' => $data['merchant_email'],
+					'merchant_id' => $data['merchant_id'],
+					'customer_email' => 'none',
+					'order_id' => $data['order_id'],
+					'amount' => $data['amount'],
+					'status' => 'wait for customer authotization',
+					'time' => $date->format('Y-m-d')
+				)
+			);
 		}
-		return Response::make('', 409);
+		catch(Exception $e) {
+			$statusCode = 404;
+		} finally {
+			if($id>0) {
+				$response = Response::make($responseBody, $statuscode);
+				$response->header('Location', $url.'/'.$id);
+				return $response;
+			}
+			return Response::make($responseBody, $statusCode);
+		}
 	}
 
 
@@ -115,8 +112,9 @@ class PaymentController extends \BaseController {
 	        $payment = Payment::find($id);
 	        $response['payment'][] = [
 	            'id' => $payment->id,
-	            'merchant_id' => $payment->merchant_id,
+	            'merchant_email' => $payment->merchant_email,
 	            'order_id' => $payment->order_id,
+	            'customer_email' => $payment->customer_email,
 	            'amount' => $payment->amount,
 	            'status' => $payment->status,
 	            'time' => $payment->time
@@ -128,33 +126,8 @@ class PaymentController extends \BaseController {
 	    }
 	}
 
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		// didn't use, because we only need customer authorization and merchant validation.
-	}
-
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-
-	}
-
 	public function authorize($id) {
 		$payment = Payment::find($id);
-		var_dump($payment);
 		$user = Auth::user();
 		$result = $payment->user_auth($user);
 		if($result) {
@@ -163,6 +136,15 @@ class PaymentController extends \BaseController {
 		return Redirect::route('payment.show', array('id' => $id));
 	}
 
+	public function cancel($id) {
+		$payment = Payment::find($id);
+		$user = Auth::user();
+		$result = $payment->cancel($user);
+		if($result) {
+			return ;
+		}
+		return ;
+	}
 
 	/**
 	 * Remove the specified resource from storage.

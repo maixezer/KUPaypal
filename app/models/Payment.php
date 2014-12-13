@@ -21,6 +21,33 @@ class Payment extends Eloquent {
 		return false;
 	}
 
+	public function cancel($user) {
+		$status = 0;
+		if($this->status == 'wait for customer authotization') 
+			$status = 0;
+		else if($this->status == 'wait for merchant validation')
+			$status = 1;
+		else $status = 2;
+		if($user->email == $this->merchant_email || $user->email == $this->customer_email) {
+			$this->status = 'cancelled';
+			$this->save();
+			if($status == 0) return true;
+
+			$customer = User::where('email', '=', $this->customer_email)-first();
+			$customer_wallet = Wallet::where('owner_id', '=', $customer->id)->first();
+			$customer_wallet->balance += $this->amount;
+			$customer_wallet->save();
+			if($status == 1) return true;
+
+			$merchant = User::where('email', '=', $this->merchant_email)-first();
+			$merchant_wallet = Wallet::where('owner_id', '=', $merchant->id)->first();
+			$merchant_wallet->balance -= $this->amount;
+			$merchant_wallet->save();
+			return true;
+		}
+		return false;
+	}
+
 	private function merchant_validate($user) {
 		if($this->status == 'wait for merchant validation') {
 			$this->status = 'success';

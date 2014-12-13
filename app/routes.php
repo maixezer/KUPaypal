@@ -11,10 +11,10 @@
 |
 */
 
-Route::get('/', function()
-{
-	return View::make('hello');
-});
+// Route::get('/', function()
+// {
+// 	return View::make('hello');
+// });
 			
 	
 /*
@@ -81,6 +81,13 @@ Route::get('/', function()
 			'as' => 'users.destroy',
 			'uses' => 'UserController@destroy'
 		));
+		/*
+			sign out route
+		*/
+		Route::get('/users/sign_out', array(
+			'as' => 'user-sign-out',
+			'uses' => 'UserController@getSignOut'
+		));
 
 		//Route::resource('wallets','WalletController');
 
@@ -90,22 +97,6 @@ Route::get('/', function()
 		Route::get('/wallets', array(
 			'as' => 'wallets.index',
 			'uses' => 'WalletController@index'
-		));
-		Route::post('/wallets', array(
-			'as' => 'wallets.store',
-				'uses' => 'WalletController@store'
-		));
-		Route::get('/wallets/{wallets}/edit', array(
-			'as' => 'wallets.edit',
-			'uses' => 'WalletController@edit'
-		));
-		Route::put('/wallets/{wallets}', array(
-			'as' => 'wallets.update',
-			'uses' => 'WalletController@update'
-		));
-		Route::delete('/wallets/{wallets}', array(
-			'as' => 'wallets.destroy',
-			'uses' => 'WalletController@destroy'
 		));
 		Route::get('/wallets/deposit', array(
 			'as' => 'wallets.deposit',
@@ -129,10 +120,6 @@ Route::get('/', function()
 			'as' => 'payment.show',
 			'uses' => 'PaymentController@show'
 		));
-		Route::put('/payment/{payment}', array(
-			'as' => 'payment.update',
-			'uses' => 'PaymentController@update'
-		));
 		Route::delete('/payment/{payment}', array(
 			'as' => 'payment.delete',
 			'uses' => 'PaymentController@destroy'
@@ -141,14 +128,9 @@ Route::get('/', function()
 			'as' => 'payment.authorize',
 			'uses' => 'PaymentController@authorize'
 		));
-
-
-		/*
-			sign out route
-		*/
-		Route::get('/users/sign_out', array(
-			'as' => 'user-sign-out',
-			'uses' => 'UserController@getSignOut'
+		Route::get('payment/{payment}/cancel', array(
+			'as' => 'payment.cancel',
+			'uses' => 'PaymentController@cancel'
 		));
 
 

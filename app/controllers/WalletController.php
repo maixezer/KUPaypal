@@ -30,41 +30,6 @@ class WalletController extends \BaseController {
 	    }
 	}
 
-	public function create()
-	{
-		// didn't have a view to handle this because wallet is create together with user.
-	}
-
-	public function store()
-	{
-		// same reason from create function.
-	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		
-	}
-
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-
 	/**
 	 * Update the specified resource in storage.
 	 *

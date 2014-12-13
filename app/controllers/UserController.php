@@ -27,65 +27,6 @@ class UserController extends \BaseController {
 	    }
 	}
 
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		// delegate to get sign up function.
-	}
-
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		// delegate to post sign up function.
-	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-		try{
- 
-	        $response = [
-	            'user' => []
-	        ];
-	        $statusCode = 200;
-	        $user = User::find($id);
-	 
-	            $response['user'][] = [
-	                'id' => $user->id,
-	                'first_name' => $user->first_name,
-	                'last_name' => $user->last_name,
-	                'date_of_birth' => $user->date_of_birth,
-	                'phone' => $user->phone,
-	                'address' => $user->address
-	            ];
-	 
-	 
-	    }catch (Exception $e){
-	        $statusCode = 404;
-	    }finally{
-	        return Response::json($response, $statusCode);
-	    }
-
-	}
-
-
 	/**
 	 * Show the form for editing the specified resource.
 	 *
@@ -249,7 +190,7 @@ class UserController extends \BaseController {
 
 	public function getSignOut() {
 		Auth::logout();
-		return Redirect::route('user-sign-in');
+		return Redirect::route('users.index');
 	}
 
 }

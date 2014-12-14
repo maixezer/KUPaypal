@@ -167,7 +167,7 @@ Precondition should refine the precondition of Login Failed
 3. (Extra) Support multiple currency and multiple language
 
 <h3>API Specification</h3>
-<b><i>[API Specification at github's wiki](https://github.com/maixezer/KUPaymentService/wiki/API-Specification) </i></b> <br>
+<b><i>[API Specification at github's wiki](https://github.com/maixezer/KUPaypal/wiki/API-Specification) </i></b> <br>
 
 <h3>Reference</h3>
 This part is reference of my research through paypal system.

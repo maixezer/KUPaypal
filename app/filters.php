@@ -13,13 +13,14 @@
 
 App::before(function($request)
 {
-	//
+	
 });
 
 
 App::after(function($request, $response)
 {
-  
+  $response->header('Access-Control-Allow-Origin','*');
+  $response->header('Access-Control-Allow-Headers' ,'*');
 });
 
 /*

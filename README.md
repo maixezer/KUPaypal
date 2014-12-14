@@ -173,6 +173,15 @@ Precondition should refine the precondition of Login Failed
 This part is reference of my research through paypal system.
 I found this [link](https://www.paypal.com/cy/webapps/mpp/ua/servicedescription-full) is really helpful.
 
+<h3>Picture</h3>
+![Alt text](https://github.com/maixezer/KUPaypal/blob/master/picture/SequenceMerchant.png "Optional title")
+
+<h3>Picture</h3>
+![Alt text](https://github.com/maixezer/KUPaypal/blob/master/picture/SequenceMerchant.png "Optional title")
+
+<h3>Picture</h3>
+![Alt text](https://github.com/maixezer/KUPaypal/blob/master/picture/SequenceMerchant.png "Optional title")
+
 <h2>Developer</h2>
 * Atit Lelasuksan 5510546201
 * Parinthorn Panya 5510546085

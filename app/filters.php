@@ -19,7 +19,7 @@ App::before(function($request)
 
 App::after(function($request, $response)
 {
-	//
+  
 });
 
 /*
@@ -43,7 +43,7 @@ Route::filter('auth', function()
 		}
 		else
 		{
-			return Redirect::guest('/users/sign_in');
+			return Redirect::guest('/user/sign_in');
 		}
 	}
 });

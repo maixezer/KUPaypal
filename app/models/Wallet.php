@@ -19,18 +19,17 @@ class Wallet extends Eloquent {
 			'time' => $date->format('Y-m-d'),
 			'type' => 'deposit'
 		));
-		if($amount) {
-			$this->balance += $amount;
-			$this->save();
-			return true;
-		}
-		return false;
+		$bal = $this->balance;
+		$this->balance = $bal+$amount;
+		$this->save();
+		return true;
 	}
 
 	public function withdraw($user, $amount) {
 		if($user&&$amount) {
 			if($this->balance >= $amount) {
-				$this->balance -= $amount;
+				$bal = $this->balance;
+				$this->balance = $bal - $amount;
 				$this->save();
 				return true;
 			}

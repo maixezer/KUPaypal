@@ -17,14 +17,14 @@ class PaymentController extends \BaseController {
 		try{
 			$user = Auth::user();
 	        $response = [
-	            'payments' => []
+	            'payment' => []
 	        ];
 	        $statusCode = 200;
 	        $payments = Payment::all();
 	 
 	        foreach($payments as $payment){
 	 			if ($user->email == $payment->merchant_email || $user->email == $payment->customer_email) {
-	            	$response['payments'][] = [
+	            	$response['payment'][] = [
 	                	'id' => $payment->id,
 	                	'merchant_email' => $payment->merchant_email,
 	                	'customer_email' => $payment->customer_email,
@@ -60,39 +60,44 @@ class PaymentController extends \BaseController {
 	 * @return Response
 	 */
 	public function store()
-	{
+	{	
 		$id = 0;
-		$statusCode = 201
+		$statusCode = 201;
 		$responseBody = '';
-		try{
-			$url = Request::url();
+		$data = Input::get('payment');
 
-			$data = Input::all();
-
-			$date = new DateTime();
-
-			$id = DB::table('payments')->insertGetId(
-				array(
-					'merchant_email' => $data['merchant_email'],
-					'merchant_id' => $data['merchant_id'],
-					'customer_email' => 'none',
-					'order_id' => $data['order_id'],
-					'amount' => $data['amount'],
-					'status' => 'wait for customer authotization',
-					'time' => $date->format('Y-m-d')
-				)
-			);
+		if(empty($data)) {
+				return Response::make('',400);
 		}
-		catch(Exception $e) {
-			$statusCode = 404;
-		} finally {
-			if($id>0) {
-				$response = Response::make($responseBody, $statuscode);
-				$response->header('Location', $url.'/'.$id);
-				return $response;
-			}
-			return Response::make($responseBody, $statusCode);
+
+		$merchant = User::where('email', '=', $data['merchant_email'])->first();
+
+		if($merchant == null) {
+			return Response::make("Merchant email doesn't exist.", 400);
 		}
+
+		$url = Request::url();
+
+		$date = new DateTime();
+
+		$id = DB::table('payments')->insertGetId(
+			array(
+				'merchant_email' => $data['merchant_email'],
+				'customer_email' => 'none',
+				'order_id' => $data['order_id'],
+				'amount' => $data['amount'],
+				'status' => 'wait for customer authotization',
+				'time' => $date->format('Y-m-d')
+			)
+		);
+
+		if($id>0) {
+			$response = Response::make($responseBody, $statusCode);
+			$response->header('Location', $url.'/'.$id);
+			return $response;
+		}
+		$statusCode = 400;
+		return Response::make($responseBody.$id, $statusCode);
 	}
 
 
@@ -113,8 +118,8 @@ class PaymentController extends \BaseController {
 	        $response['payment'][] = [
 	            'id' => $payment->id,
 	            'merchant_email' => $payment->merchant_email,
-	            'order_id' => $payment->order_id,
 	            'customer_email' => $payment->customer_email,
+	            'order_id' => $payment->order_id,
 	            'amount' => $payment->amount,
 	            'status' => $payment->status,
 	            'time' => $payment->time
@@ -134,6 +139,14 @@ class PaymentController extends \BaseController {
 			return Redirect::route('payment.show', array('id' => $id));
 		}
 		return Redirect::route('payment.show', array('id' => $id));
+	}
+
+	public function getAccept($id) {
+		return View::make('payment.show')->with('id',$id);
+	}
+
+	public function getValidate($id) {
+		return View::make('payment.validation')->with('id',$id);
 	}
 
 	public function cancel($id) {

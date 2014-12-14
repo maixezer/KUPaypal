@@ -11,13 +11,17 @@
 |
 */
 
-// Route::get('/', function()
-// {
-// 	return View::make('hello');
-// });
+Route::get('/', array(
+	'as' => 'home',
+	'uses' => 'HomeController@home')
+);
 			
-	
-/*
+Route::post('/payment', array(
+	'as' => 'payment.store',
+	'uses' => 'PaymentController@store'
+));
+
+	/*
 		Unauthenticated gro//up
 	*/
 	Route::group( array('before' => 'guest'), function(){
@@ -27,18 +31,18 @@
 		*/
 		Route::group( array('before' => 'csrf') , function(){
 
-			Route::post('/users/sign_in',array(
+			Route::post('/user/sign_in',array(
 				'as' => 'user-sign-in-post',
 				'uses' => 'UserController@postSignIn'
 			));
 
-			Route::post('/uses/register', array(
+			Route::post('/use/register', array(
 				'as' => 'user-sign-up-post',
 				'uses' => 'UserController@postSignUp'
 			));
 		});
 		
-		Route::get('/users/sign_in' ,array(
+		Route::get('/user/sign_in' ,array(
 			'as' => 'user-sign-in',
 			'uses' => 'UserController@getSignIn'
 		));
@@ -46,7 +50,7 @@
 		/*
 			create and store user
 		*/
-		Route::get('/users/register', array(
+		Route::get('/user/register', array(
 			'as' => 'user-sign-up',
 			'uses' => 'UserController@getSignUp'
 		));
@@ -59,32 +63,35 @@
 		Authenticated group
 	*/
 	Route::group(array('before' => 'auth'),function(){
-		// Route::resource('users', 'UserController');
 
 		/*
 			Users group
 			create and store users belong to guest group.
 		*/
-		Route::get('/users', array(
+		Route::get('/user', array(
 			'as' => 'users.index',
 			'uses' => 'UserController@index'
 		));
-		Route::get('/users/edit', array(
+		Route::get('/user/edit', array(
 			'as' => 'users.edit',
 			'uses' => 'UserController@edit'
 		));
-		Route::put('/users/{users}', array(
+		Route::get('/user/profile',array(
+			'as' => 'users.profile',
+			'uses' => 'UserController@getProfile'
+		));
+		Route::put('/user/{users}', array(
 			'as' => 'users.update',
 			'uses' => 'UserController@update'
 		));
-		Route::delete('/users/{users}', array(
+		Route::delete('/user/{users}', array(
 			'as' => 'users.destroy',
 			'uses' => 'UserController@destroy'
 		));
 		/*
 			sign out route
 		*/
-		Route::get('/users/sign_out', array(
+		Route::get('/user/sign_out', array(
 			'as' => 'user-sign-out',
 			'uses' => 'UserController@getSignOut'
 		));
@@ -94,11 +101,11 @@
 		/*
 			wallet & wallet transaction group
 		*/
-		Route::get('/wallets', array(
+		Route::get('/wallet', array(
 			'as' => 'wallets.index',
 			'uses' => 'WalletController@index'
 		));
-		Route::get('/wallets/deposit', array(
+		Route::put('/wallet/deposit', array(
 			'as' => 'wallets.deposit',
 			'uses' => 'WalletController@deposit'
 		));
@@ -112,10 +119,6 @@
 			'as' => 'payment.index',
 			'uses' => 'PaymentController@index'
 		));
-		Route::post('/payment', array(
-			'as' => 'payment.store',
-			'uses' => 'PaymentController@store'
-		));
 		Route::get('/payment/{payment}', array(
 			'as' => 'payment.show',
 			'uses' => 'PaymentController@show'
@@ -124,107 +127,24 @@
 			'as' => 'payment.delete',
 			'uses' => 'PaymentController@destroy'
 		));
-		Route::get('payment/{payment}/authorize', array(
-			'as' => 'payment.authorize',
+		Route::put('payment/{payment}/authorize', array(
+			'as' => 'payment.putAuthorize',
 			'uses' => 'PaymentController@authorize'
 		));
 		Route::get('payment/{payment}/cancel', array(
 			'as' => 'payment.cancel',
 			'uses' => 'PaymentController@cancel'
 		));
+		Route::get('payment/{payment}/accept', array(
+			'as' => 'payment.getAccept',
+			'uses' => 'PaymentController@getAccept'
+		));
+		Route::get('payment/{payment}/validate', array(
+			'as' => 'payment.getValidate',
+			'uses' => 'PaymentController@getValidate'
+		));
 
-
-		/*
-			CSRF protection group
-		*/
-		Route::group( array('before' => 'csrf') , function(){
-
-
-			/*
-				Users group
-				create and store users belong to guest group.
-			*/
-			// Route::get('/users', array(
-			// 		'as' => 'users.index',
-			// 		'uses' => 'UserController@index'
-			// ));
-			// Route::get('/users/{users}', array(
-			// 		'as' => 'users.show',
-			// 		'uses' => 'UserController@show'
-			// ));
-			// Route::get('/users/{users}/edit', array(
-			// 		'as' => 'users.edit',
-			// 		'uses' => 'UserController@edit'
-			// ));
-			// Route::put('/users/{users}', array(
-			// 		'as' => 'users.update',
-			// 		'uses' => 'UserController@update'
-			// ));
-			// Route::delete('/users/{users}', array(
-			// 		'as' => 'users.destroy',
-			// 		'uses' => 'UserController@destroy'
-			// ));
-			// Route::resource('users', 'UserController');
-
-
-			/*
-				wallet & wallet transaction group
-			*/
-			// Route::get('/wallets', array(
-			// 		'as' => 'wallets.index',
-			// 		'uses' => 'WalletController@index'
-			// ));
-			// Route::post('/wallets', array(
-			// 		'as' => 'wallets.store',
-			// 		'uses' => 'WalletController@store'
-			// ));
-			// Route::get('/wallets/{wallets}', array(
-			// 		'as' => 'wallets.show',
-			// 		'uses' => 'WalletController@show'
-			// ));
-			// Route::get('/wallets/{wallets}/edit', array(
-			// 		'as' => 'wallets.edit',
-			// 		'uses' => 'WalletController@edit'
-			// ));
-			// Route::put('/wallets/{wallets}', array(
-			// 		'as' => 'wallets.update',
-			// 		'uses' => 'WalletController@update'
-			// ));
-			// Route::delete('/wallets/{wallets}', array(
-			// 		'as' => 'wallets.destroy',
-			// 		'uses' => 'wallets.destroy'
-			// ));
-
-			/*
-				Payment group
-			*/
-			// Route::get('/payment', array(
-			// 		'as' => 'payment.index',
-			// 		'uses' => 'PaymentController@index'
-			// ));
-			// Route::post('/payment', array(
-			// 		'as' => 'payment.store',
-			// 		'uses' => 'PaymentController@store'
-			// ));
-			// Route::get('/payment/{payment}', array(
-			// 		'as' => 'payment.show',
-			// 		'uses' => 'PaymentController@show'
-			// ));
-			// Route::put('/payment/{payment}', array(
-			// 		'as' => 'payment.update',
-			// 		'uses' => 'PaymentController@update'
-			// ));
-			// Route::delete('/payment/{payment}', array(
-			// 		'as' => 'payment.delete',
-			// 		'uses' => 'PaymentController@destroy'
-			// ));
-
-			// Route::resource('wallets','WalletController');
-			// Route::resource('payment', 'PaymentController');
-
-
-		});
-
+		
 	});
 
 

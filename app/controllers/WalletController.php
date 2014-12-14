@@ -43,9 +43,15 @@ class WalletController extends \BaseController {
 
 	public function deposit() {
 		$user = Auth::user();
+		$input = Input::all();
+		$amount = floatval($input['amount']);
+
+		if( is_null($amount) || $amount <= 0 || $amount == '' ) 
+			return Redirect::route('users.profile')->with('fail','Whoops! Something wrong!!!');  
+
 		$wallet = Wallet::where('owner_id', '=', $user->id)->first();
-		$result = $wallet->deposit($user, 1000);
-		return Redirect::route('wallets.index');
+		$wallet->deposit($user, $amount);
+		return Redirect::route('users.profile');
 	}
 
 	/**

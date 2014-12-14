@@ -1,7 +1,16 @@
 @extends('layout.default')
 @section('content')
+	
+	<div class="modal-dialog" style="margin-top: 150px;" >
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onClick="">&times;</button>
+          <h4 class="modal-title">KUPayPal Sign In</h4>
+        </div>
 
         {{ Form::open( array('route' => 'user-sign-up-post' , 'method' => 'post') )}}
+        	<div class="modal-body">
 	          <span class="imt">*</span><span > Email</span>
 	          <input type="email" class="form-control" placeholder="example@example.com" name="email" {{ (Input::old('email')) ? ' value="' . e(Input::old('email')) . '"' : '' }} autofocus/>
 	          @if($errors->has('email'))
@@ -66,11 +75,16 @@
 	          @if($errors->has('phone'))
 					<p class="imt">{{ $errors->first('phone') }}</p>
 			  @endif
-
-	       {{ Form::submit('Submit',array('class' => 'btn btn-success'))}}
+			</div>
+          	<div class="modal-footer">
+	       		{{ Form::submit('Submit',array('class' => 'btn btn-success' , 'style' => 'float:left;'))}}
+	       		<span style="cursor:pointer;" class="text-info"><a href="{{ URL::route('user-sign-in')}}">Sign In</a></span>
+	       	</div>
 
      	{{ Form::token() }}
      	{{ Form::close() }}
+     	</div>
+     </div>
 
     <style type="text/css">
     	.imt {

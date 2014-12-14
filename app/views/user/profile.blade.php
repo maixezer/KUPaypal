@@ -1,68 +1,54 @@
 @extends('layout.default')
 @section('content')
-		<?php
-	        $user = Auth::user();
-		    $result = explode('-' , $user->date_of_birth);
-		?>
-
-		{{ Form::open(array('route' => array('users.update') , 'method' => 'put')) }}
-	        
-		    	  <span > Email</span>
-		          <input type="email" class="form-control" placeholder="example@example.com" name="email" value="{{ $user->email }}" disabled/>
-				  </br>
-
-				  <span > First Name</span>
-		          <input type="text" class="form-control" name="first_name" value="{{ $user->first_name}}"/>
-		          @if($errors->has('first_name'))
-						<p class="imt">{{ $errors->first('first_name') }}</p>
-				  @endif 
-		          </br>
-
-		          <span > Last Name</span>
-		          <input type="text" class="form-control" name="last_name" value="{{ $user->last_name}}"/> 
-		          @if($errors->has('last_name'))
-						<p class="imt">{{ $errors->first('last_name') }}</p>
-				  @endif
-		          </br>
-
-		          <span> Date of Birth </span>
-		          {{ Form::selectRange( 'day' , 1 , 31 , $result[2] , array(
-		                  'class' => 'btn btn-default dropdown-toggle'
-		                   )) }}
-		          {{ Form::selectMonth( 'month' , $result[1] , array(
-		                  'class' => 'btn btn-default dropdown-toggle'
-		                   )) }}
-		          {{ Form::selectRange( 'year' , 2015 , 1950 , $result[0] , array(
-		                  'class' => 'btn btn-default dropdown-toggle'
-		                   )) }}
-		          </br></br>
-
-		          <span > Address</span>
-		          </br>
-		          {{ Form::textarea('address' , $user->address , array (
-		          			'rows' => 4,
-		          			'cols' => 55
-		             )) }}
-
-		          @if($errors->has('address'))
-						<p class="imt">{{ $errors->first('address') }}</p>
-				  @endif
-		          </br></br>
-
-		          <span> Phone Number </span> <input type="text" class="form-control" name="phone" value="{{ $user->phone }}"/> 
-		          @if($errors->has('phone'))
-						<p class="imt">{{ $errors->first('phone') }}</p>
-				  @endif
-		          </br></br>
-		          
-				  {{ Form::submit('Update Profile',array('class' => 'btn btn-success'))}}
-
-	       
-	        {{ Form::token() }}
-	     {{ Form::close() }}
-	<style type="text/css">
-    	.imt {
-    		color: red;
-    	}
-    </style>
+	<?php
+		$user = Auth::user();
+		$wallet = Wallet::where('owner_id','=',$user->id)->first();
+	?>
+	<section id="welcome" class="color-dark bg-white">
+			<div class="container ">
+			    <div class="row">
+			    	<div class="col-lg-8 col-md-8">
+			    		<div class="panel-body">
+				                <div id="performance1" style="height: 5px;"></div>
+				        </div>
+			    		<h3>Welcome, {{ $user->first_name.' '.$user->last_name }}</h3>
+			    		<!-- <p>Account Type: Premier Status: Unverified Get VerifiedSending and Withdrawal Limits: View Limits </p> -->
+			    	</div>
+			    </div>
+			</div>
+			<div class="container ">
+			    <div class="row">
+			        <div class="col-lg-8 col-md-8">
+			            <div class="panel panel-default">
+			                <div class="panel-heading">
+			                    <h3>KUPayPal balance: {{ number_format($wallet->balance,2) }} THB</h3>
+			                    {{ Form::open( array('route' => 'wallets.deposit' , 'method' => 'put') ) }}
+			                    <span>
+			                    	Money : 
+			                    	<input type="text" name="amount" class="form-control"></br>
+			                    	<input type="submit" name="submit" value="Add Money" wallet-id="{{$wallet->id}}" class="btn btn-warning">
+			                    <span>
+			                    {{ Form::token() }}
+			                    {{ Form::close() }}
+				            </div>
+				            <div class="panel-body">
+				            	<table  align="left" border="1" cellpadding="0" cellspacing="10" id="balanceDetails" class="table table-hover" >
+				            		<thead>
+				            			<tr><th class="textleft">Currency</th><th class="textright">Total</th></tr>
+				           		   </thead>
+				            		<tbody>
+				            			<tr>
+				            				<td scope="row">THB&nbsp;(Primary)</td>
+				            				<td class="textright"> {{ number_format($wallet->balance,2) }} THB </td>
+				            			</tr>
+									</tbody>
+								</table>
+								<button onclick="location.href='{{ URL::route('user-sign-out') }}'" class="btn btn-primary" style="float:right"> Sign Out </button>
+				            </div>
+				        </div>
+			        </div>
+			    </div>
+	
+			</div>
+		</section>
 @endsection

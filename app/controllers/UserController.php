@@ -35,7 +35,7 @@ class UserController extends \BaseController {
 	 */
 	public function edit()
 	{
-		return View::make('user.profile');
+		return View::make('user.edit');
 	}
 
 
@@ -49,35 +49,36 @@ class UserController extends \BaseController {
 	{
 		$user = Auth::user();
 
-		$dob = new DateTime(Input::get('year'). '-' .Input::get('month') . '-' . Input::get('day'));
+		if($user) {
+			$dob = new DateTime(Input::get('year'). '-' .Input::get('month') . '-' . Input::get('day'));
 
-		$validator = Validator::make(Input::all(),
-			array(
-				'first_name'	=> 'required',
-				'last_name'		=> 'required',
-				'address'		=> 'required',
-				'phone'			=> 'required'
-			)
-		);
+			$validator = Validator::make(Input::all(),
+				array(
+					'first_name'	=> 'required',
+					'last_name'		=> 'required',
+					'address'		=> 'required',
+					'phone'			=> 'required'
+				)
+			);
 
-		if($validator->fails()){
-			return Redirect::route('users.edit' , array('id' => $id ))
-				   ->withErrors($validator)
-				   ->withInput();
-		} else {
+			if($validator->fails()){
+				return Redirect::route('users.edit' , array('id' => $id ))
+					   ->withErrors($validator)
+					   ->withInput();
+			} else {
 
-			$user->first_name = Input::get('first_name');
-			$user->last_name = Input::get('last_name');
-			$user->address  = Input::get('address');
-			$user->phone  = Input::get('phone');
-			$user->date_of_birth = $dob->format('Y-m-d');
-			$user->save();
+				$user->first_name = Input::get('first_name');
+				$user->last_name = Input::get('last_name');
+				$user->address  = Input::get('address');
+				$user->phone  = Input::get('phone');
+				$user->date_of_birth = $dob->format('Y-m-d');
+				$user->save();
 
-			return Redirect::route('users.index');
+				return Redirect::route('users.index');
+
+			}
 
 		}
-
-
 	}
 
 
@@ -120,16 +121,18 @@ class UserController extends \BaseController {
 				'password'	=> Input::get('password')
 			);
 
-			$auth = Auth::attempt($credentials);
+			$remember = (Input::has('remember')) ? true : false;
+
+			$auth = Auth::attempt($credentials,$remember);
 
 			if($auth) {
 				//Redirect to the intended page
 
 				Session::put('user' , Auth::user() );
 
-				return Redirect::intended('/');
+				return Redirect::route('users.profile');
 			} else {
-				return Redirect::route('user-sign-in');
+				return Redirect::route('user-sign-in')->with('fail' , 'User or Password are wrong');
 			}
 		}
 	}
@@ -152,7 +155,7 @@ class UserController extends \BaseController {
 		);
 
 		if($validator->fails()){
-			return Redirect::route('users-sign-up')
+			return Redirect::route('user-sign-up')
 				   ->withErrors($validator)
 				   ->withInput();
 		} else {
@@ -184,13 +187,21 @@ class UserController extends \BaseController {
 				)
 			);
 
-			return Redirect::route('users.index');
+			return Redirect::route('home')->with('success','Sign Up Success');
 		}
 	}
 
 	public function getSignOut() {
-		Auth::logout();
-		return Redirect::route('users.index');
+
+		if( Auth::check() ) {
+			Auth::logout();
+			return Redirect::route('home')->with('success','Sign out');
+		}
+		return Redirect::route('home')->with('fail','You are not sign in');
+	}
+
+	public function getProfile() {
+		return View::make('user.profile');
 	}
 
 }

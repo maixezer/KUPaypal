@@ -20,6 +20,10 @@ Route::post('/payment', array(
 	'as' => 'payment.store',
 	'uses' => 'PaymentController@store'
 ));
+Route::get('/payment/{payment}/status', array(
+	'as' => 'payment.status',
+	'uses' => 'PaymentController@getStatus'
+));
 
 	/*
 		Unauthenticated gro//up
@@ -127,9 +131,13 @@ Route::post('/payment', array(
 			'as' => 'payment.delete',
 			'uses' => 'PaymentController@destroy'
 		));
-		Route::put('payment/{payment}/authorize', array(
-			'as' => 'payment.putAuthorize',
-			'uses' => 'PaymentController@authorize'
+		Route::put('payment/{payment}/accept', array(
+			'as' => 'payment.putAccept',
+			'uses' => 'PaymentController@accept'
+		));
+		Route::put('payment/{payment}/validate', array(
+			'as' => 'payment.putValidate',
+			'uses' => 'PaymentController@validate'
 		));
 		Route::get('payment/{payment}/cancel', array(
 			'as' => 'payment.cancel',

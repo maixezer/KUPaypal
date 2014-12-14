@@ -5,6 +5,11 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableTrait;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
+/**
+ * User resource model class.
+ *
+ * @author Atit Leelasuksan 5510546221, Parinthorn Panya 5510546085
+ */
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	use UserTrait, RemindableTrait;

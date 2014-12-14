@@ -1,16 +1,18 @@
 <?php
 
+/**
+ * Controller which handle HTTP request to payment resource.
+ *
+ * @author Atit Leelasuksan 5510546221, Parinthorn Panya 5510546085
+ */
 class PaymentController extends \BaseController {
 
 	public $restful = true;
 
-	private $wait_customer = 'wait for customer authotization';
-	private $wait_merchant = 'wait for merchant validation';
-	private $success = 'success';
 	/**
-	 * Display a listing of the resource.
+	 * Display all payment that relate to current signed in user.
 	 *
-	 * @return Response
+	 * @return Response with all related payment information.
 	 */
 	public function index()
 	{
@@ -43,22 +45,12 @@ class PaymentController extends \BaseController {
 	    }
 	}
 
-
 	/**
-	 * Show the form for creating a new resource.
+	 * post new payment to payment system.
+	 * require merchant email, order id and amount for payment.
 	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		// view that have information to create a payment
-	}
-
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
+	 * @return Success response with Location which have created payment path.
+	 *			Alternative response with failure description.
 	 */
 	public function store()
 	{	
@@ -67,20 +59,14 @@ class PaymentController extends \BaseController {
 		$responseBody = '';
 		$data = Input::get('payment');
 
-		$validator = Validator::make($data,
-				array(
-					'merchant_email' => 'required|max:50|email|unique:users',
-					'order_id'	=> 'required',
-					'amount'	=> 'regex:{^[0-9]{1,3}$}'
-				)
-			);
-
-
 		if(empty($data)) {
 			return Response::make('Request body is empty.',400);
 		}
-		if($validator->fails()) {
-			return Response::make("E-mail doesn't exist or amount is negative.", 400);
+		if($data['amount']<0) {
+			if(User::where('email', '=', $data['merchant_email'])->first() == null && 
+				User::where('email', '=', strtolower($data['merchant_email']))->first() == null) {
+				return Response::make("E-mail doesn't exist or amount is negative.", 400);
+			}
 		}
 
 		// $merchant = User::where('email', '=', $data['merchant_email'])->first();
@@ -99,8 +85,10 @@ class PaymentController extends \BaseController {
 				'customer_email' => 'none',
 				'order_id' => $data['order_id'],
 				'amount' => $data['amount'],
-				'status' => 'wait for customer authotization',
-				'time' => $date->format('Y-m-d')
+				'status' => 'wait for customer acceptance',
+				'time' => $date->format('Y-m-d'),
+				'created_at' => $date,
+				'updated_at' => $date
 			)
 		);
 
@@ -115,10 +103,10 @@ class PaymentController extends \BaseController {
 
 
 	/**
-	 * Display the specified resource.
+	 * Display the specified payment.
 	 *
-	 * @param  int  $id
-	 * @return Response
+	 * @param  int  $id of payment.
+	 * @return Response with specific payment information.
 	 */
 	public function show($id)
 	{
@@ -144,24 +132,78 @@ class PaymentController extends \BaseController {
 	    }
 	}
 
-	public function authorize($id) {
-		$payment = Payment::find($id);
-		$user = Auth::user();
-		$result = $payment->user_auth($user);
-		if($result) {
-			return Redirect::route('payment.show', array('id' => $id));
+	/**
+	 * Retrieve the specific payment status.
+	 *
+	 * @return Response with status of payment.
+	 */
+	public function getStatus($id) {
+		try {
+			$payment = Payment::find($id);
+			$response = [
+				"status" => $payment->status
+			];
+			$responseCode = 200;
+		} catch(Exception $e) {
+			$responseCode = 404;
+		} finally {
+			return Response::json($response, $responseCode);
 		}
-		return Redirect::route('payment.show', array('id' => $id));
 	}
 
+	/**
+	 * Customer accept the specific payment.
+	 *
+	 * @return Redirect route to the specific payment information.
+	 */
+	public function accept($id) {
+		$payment = Payment::find($id);
+		$user = Auth::user();
+		$result = $payment->customer_accept($user);
+		if($result) {
+			return Redirect::route('payment.getAccept', array('id' => $id));
+		}
+		return Redirect::route('payment.getAccept', array('id' => $id));
+	}
+
+	/**
+	 * Merchant validate the specific payment.
+	 *
+	 * @return Redirect route to the specific payment information.
+	 */
+	public function validate($id) {
+		$payment = Payment::find($id);
+		$user = Auth::user();
+		$result = $payment->merchant_validate($user);
+		if($result) {
+			return Redirect::route('payment.getValidate', array('id' => $id));
+		}
+		return Redirect::route('payment.getValidate', array('id' => $id));
+	}
+
+	/**
+	 * Get HTML page to accept the specific payment.
+	 *
+	 * @return View for customer to accept the specific payment.
+	 */
 	public function getAccept($id) {
 		return View::make('payment.show')->with('id',$id);
 	}
 
+	/**
+	 * Get HTML page to validate the specific payment.
+	 *
+	 * @return View for merchant to validate the specific payment.
+	 */
 	public function getValidate($id) {
 		return View::make('payment.validation')->with('id',$id);
 	}
 
+	/**
+	 * User cancel the specific payment.
+	 *
+	 * @return Redirect route to the specific payment information.
+	 */
 	public function cancel($id) {
 		$payment = Payment::find($id);
 		$user = Auth::user();
@@ -171,17 +213,5 @@ class PaymentController extends \BaseController {
 		}
 		return Redirect::route('payment.show', array('id' => $id));
 	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		// didn't have to remove/destroy a payment. because we can mark it to be a cancelled or reversed one.
-	}
-
 
 }

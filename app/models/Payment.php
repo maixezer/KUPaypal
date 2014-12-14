@@ -1,26 +1,26 @@
 <?php
 
+/**
+ * Payment resource model class.
+ *
+ * @author Atit Leelasuksan 5510546221, Parinthorn Panya 5510546085
+ */
 class Payment extends Eloquent {
 
+	/**
+	 * required attribute for eloquent model.
+	 */
 	protected $table = 'payments';
 
 	protected $fillable = array('order_id','amount', 'merchant_email', 'customer_email', 'status');
 
-	public function user_auth($user) {
-		$result = false;
-		if(strtolower($user->email) == strtolower($this->merchant_email)) {
-			$result = $this->merchant_validate($user);
-		}
-		else if($this->status == 'wait for customer authotization') {
-			$result = $this->customer_authorize($user);
-		}
-		if($result) {
-			$this->save();
-			return true;
-		}
-		return false;
-	}
-
+	/**
+	 * cancel payment, only merchant can cancel.
+	 * function will reverse all operation that payment has done before cancel and marked payemnt as cancelled.
+	 *
+	 * @return true if it can reverse all operation
+	 *			false otherwise.
+	 */
 	public function cancel($user) {
 		if($this->status == 'wait for customer authotization') 
 			$status = 0;
@@ -28,8 +28,7 @@ class Payment extends Eloquent {
 			$status = 1;
 		else $status = 2;
 
-		if(strtolower($user->email) == strtolower($this->merchant_email) || 
-			strtolower($user->email) == strtolower($this->customer_email)) {
+		if(strtolower($user->email) == strtolower($this->merchant_email)) {
 			$this->status = 'cancelled';
 			$this->save();
 			if($status == 0) return true;
@@ -49,9 +48,17 @@ class Payment extends Eloquent {
 		return false;
 	}
 
-	private function merchant_validate($user) {
+	/**
+	 * merchant validate the specific payment to retreive money from customer.
+	 *
+	 * @return true if merchant validated
+	 *			false otherwise.
+	 */
+	public function merchant_validate($user) {
+		if(strtolower($user->email) != strtolower($this->merchant_email)) return false;
 		if($this->status == 'wait for merchant validation') {
 			$this->status = 'success';
+			$this->save();
 			// money tranferred.
 			$merchant_wallet = Wallet::where('owner_id', '=', $user->id)->first();
 			$merchant_wallet->balance += $this->amount;
@@ -61,12 +68,20 @@ class Payment extends Eloquent {
 		return false;
 	}
 
-	private function customer_authorize($user) {
-		//wait for merchant to validate a payment.
+	/**
+	 * customer accept the specific payment to hold his/her money 
+	 * and wait for merchant to validate the payment.
+	 *
+	 * @return true if customer can accept the specific payment
+	 *			false otherwise.
+	 */
+	public function customer_accept($user) {
+		if($this->status != 'wait for customer acceptance') return false;
 		$customer_wallet = Wallet::where('owner_id', '=', $user->id)->first();
 		if($customer_wallet->balance >= $this->amount) {
 			$this->status = 'wait for merchant validation';
 			$this->customer_email = $user->email;
+			$this->save();
 			$customer_wallet->balance -= $this->amount;
 			$customer_wallet->save();
 			return true;

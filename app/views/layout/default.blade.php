@@ -56,6 +56,6 @@
 	</style>
 	<script>
 		if(document.getElementById("notice")!== null)
-        	$('#notice').delay(3000).fadeOut(1000);
+        	$('#notice').delay(1000).fadeOut(1000);
 	</script>
 </html>

@@ -1,9 +1,19 @@
 <?php
 
+/**
+ * Controller which handle HTTP request of user resource.
+ *
+ * @author Atit Leelasuksan 5510546221, Parinthorn Panya 5510546085
+ */
 class UserController extends \BaseController {
 
 	public $restful = true;
 
+	/**
+	 * Display currently signed in user information.
+	 *
+	 * @return Response with user information.
+	 */
 	public function index()
 	{
 		try{
@@ -28,10 +38,10 @@ class UserController extends \BaseController {
 	}
 
 	/**
-	 * Show the form for editing the specified resource.
+	 * Get HTML page for edit user information.
 	 *
-	 * @param  int  $id
-	 * @return Response
+	 * @param  int  $id of user.
+	 * @return View for edit user information.
 	 */
 	public function edit()
 	{
@@ -40,10 +50,10 @@ class UserController extends \BaseController {
 
 
 	/**
-	 * Update the specified resource in storage.
+	 * Update the specified user from input form(receive from HTML page user.edit).
 	 *
-	 * @param  int  $id
-	 * @return Response
+	 * @param  int  $id of user.
+	 * @return Redirect to users.index which response user information.
 	 */
 	public function update()
 	{
@@ -81,28 +91,22 @@ class UserController extends \BaseController {
 		}
 	}
 
-
-	public function getDestroy() {
-		// create a view that wait for user confirmation.
-	}
-
 	/**
-	 * Remove the specified resource from storage.
+	 * Get HTML page for sign in.
 	 *
-	 * @param  int  $id
-	 * @return Response
+	 * @return View for user to sign in.
 	 */
-	public function destroy($id)
-	{
-		// handle http delete request to destroy user.
-	}
-
 	public function getSignIn() {
 		return View::make('user.signin');
 	}
 
+	/**
+	 * Post sign in information to sign in to service system.
+	 *
+	 * @return Success Redirect to users.index which show user information
+	 *			Alternative Redirect to sign in page.
+	 */
 	public function postSignIn() {
-
 		$validator = Validator::make(Input::all(),
 			array(
 				'email' 	=> 'required|email|exists:users',
@@ -137,10 +141,20 @@ class UserController extends \BaseController {
 		}
 	}
 
+	/**
+	 * Get HTML page for sign up.
+	 *
+	 * @return View for sign up.
+	 */
 	public function getSignUp() {
 		return View::make('user.create');
 	}
 
+	/**
+	 * Post sign up information to sign up a new user.
+	 *
+	 * @return Redirect to route home.
+	 */
 	public function postSignUp() {
 		$validator = Validator::make(Input::all(),
 			array(
@@ -191,6 +205,11 @@ class UserController extends \BaseController {
 		}
 	}
 
+	/**
+	 * Get HTML page for sign out.
+	 *
+	 * @return Redirect route to home page.
+	 */
 	public function getSignOut() {
 
 		if( Auth::check() ) {
@@ -200,6 +219,11 @@ class UserController extends \BaseController {
 		return Redirect::route('home')->with('fail','You are not sign in');
 	}
 
+	/**
+	 * Get HTML page for user profile with balance.
+	 *
+	 * @return View for user profile and balance.
+	 */
 	public function getProfile() {
 		return View::make('user.profile');
 	}

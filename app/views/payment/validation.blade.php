@@ -13,7 +13,7 @@
         </div>
 
 		<div class="modal-body">
-			{{ Form::open(array('route'=> array('payment.putAuthorize',$id) , 'method' => 'put' ))}}
+			{{ Form::open(array('route'=> array('payment.putValidate',$id) , 'method' => 'put' ))}}
 			<p> ID : {{ $payment->id }}</p>
 			<p> OrderID : {{ $payment->order_id }}</p>
 			<p> Status : {{ $payment->status }}</p>
@@ -22,14 +22,14 @@
 			<p> Customer_Email : {{ $payment->customer_email }}</p>
 			<p> Amount : {{ $payment->amount }}</p>
 			<div class="modal-footer">
-				@if($payment->status == 'wait for merchant validation' && $user->email == $payment->merchant_email)
+				@if($payment->status == 'wait for merchant validation' && strtolower($user->email) == strtolower($payment->merchant_email))
 					{{ Form::submit('Accept',array('class' => 'btn btn-success' , 'style' => 'float:right;'))}}
 				@endif
 			{{ Form::token() }}
 			{{ Form::close() }}
 
 			{{ Form::open(array('route'=> array('payment.cancel',$id) , 'method' => 'get' ))}}
-				@if($payment->status == 'wait for merchant validation' && $user->email == $payment->merchant_email)
+				@if($payment->status == 'wait for merchant validation' && strtolower($user->email) == strtolower($payment->merchant_email))
 					{{ Form::submit('Decline',array('class' => 'btn btn-danger' , 'style' => 'float:left;'))}}
 				@endif
 			{{Form::close()}}

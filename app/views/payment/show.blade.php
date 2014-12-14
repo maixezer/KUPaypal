@@ -12,7 +12,7 @@
           <h4 class="modal-title">KUPayPal PaymentID: {{ $payment->id }} , OrderID {{$payment->order_id}}</h4>
         </div>
 
-		{{ Form::open(array('route'=> array('payment.putAuthorize',$id) , 'method' => 'put'))}}
+		{{ Form::open(array('route'=> array('payment.putAccept',$id) , 'method' => 'put'))}}
 		<div class="modal-body">
 			<p> ID : {{ $payment->id }}</p>
 			<p> OrderID : {{ $payment->order_id }}</p>
@@ -21,7 +21,7 @@
 			<p> Merchant_Email : {{ $payment->merchant_email }}</p>
 			<p> Amount : {{ $payment->amount }}</p>
 			<div class="modal-footer">
-				@if($payment->status == 'wait for customer authotization')
+				@if($payment->status == 'wait for customer acceptance')
 					{{ Form::submit('Accept',array('class' => 'btn btn-success' , 'style' => 'float:right;'))}}
 				@endif
 			</div>

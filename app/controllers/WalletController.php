@@ -1,13 +1,18 @@
 <?php
 
+/**
+ * Controller which handle HTTP request of wallet resource.
+ *
+ * @author Atit Leelasuksan 5510546221, Parinthorn Panya 5510546085
+ */
 class WalletController extends \BaseController {
 
 	public $restful = true;
 
 	/**
-	 * Display a listing of the resource.
+	 * Display a wallet from current signed in user.
 	 *
-	 * @return Response
+	 * @return Response with wallet information.
 	 */
 	public function index()
 	{
@@ -30,16 +35,11 @@ class WalletController extends \BaseController {
 	}
 
 	/**
-	 * Update the specified resource in storage.
+	 * Deposit money
 	 *
-	 * @param  int  $id
-	 * @return Response
+	 * @return Success Redirect route to users.profile page which have user profile and balance.
+	 *			Alternative Redirect with error message.
 	 */
-	public function update($id)
-	{
-		
-	}
-
 	public function deposit() {
 		$user = Auth::user();
 		$input = Input::all();
@@ -52,17 +52,5 @@ class WalletController extends \BaseController {
 		$wallet->deposit($user, $amount);
 		return Redirect::route('users.profile');
 	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		// do with destroy user.
-	}
-
 
 }

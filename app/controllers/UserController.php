@@ -11,7 +11,7 @@ class UserController extends \BaseController {
 	        $statusCode = 200;
 	        $users = User::where('id', '=', $user->id);
 	 
-	        $response = [
+	        $response['user'][] = [
 	            'id' => $user->id,
 	            'first_name' => $user->first_name,
 	            'last_name' => $user->last_name,

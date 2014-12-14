@@ -17,14 +17,14 @@ class PaymentController extends \BaseController {
 		try{
 			$user = Auth::user();
 	        $response = [
-	            'payment' => []
+	            'payments' => []
 	        ];
 	        $statusCode = 200;
 	        $payments = Payment::all();
 	 
 	        foreach($payments as $payment){
 	 			if ($user->email == $payment->merchant_email || $user->email == $payment->customer_email) {
-	            	$response['payment'][] = [
+	            	$response['payments'][] = [
 	                	'id' => $payment->id,
 	                	'merchant_email' => $payment->merchant_email,
 	                	'customer_email' => $payment->customer_email,

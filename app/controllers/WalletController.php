@@ -15,8 +15,7 @@ class WalletController extends \BaseController {
 			$user = Auth::user();
 	        $statusCode = 200;
 	        $wallet = Wallet::where('owner_id', '=', $user->id)->first();
-	 
-	        $response = [
+	        $response['wallet'][] = [
 	            'id' => $wallet->id,
 	            'owner_id' => $wallet->owner_id,
 	            'balance'  => $wallet->balance

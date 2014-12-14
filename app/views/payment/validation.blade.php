@@ -12,8 +12,8 @@
           <h4 class="modal-title">KUPayPal PaymentID: {{ $payment->id }} , OrderID {{$payment->order_id}}</h4>
         </div>
 
-		{{ Form::open(array('route'=> array('payment.putAuthorize',$id) , 'method' => 'put' ))}}
 		<div class="modal-body">
+			{{ Form::open(array('route'=> array('payment.putAuthorize',$id) , 'method' => 'put' ))}}
 			<p> ID : {{ $payment->id }}</p>
 			<p> OrderID : {{ $payment->order_id }}</p>
 			<p> Status : {{ $payment->status }}</p>
@@ -22,13 +22,19 @@
 			<p> Customer_Email : {{ $payment->customer_email }}</p>
 			<p> Amount : {{ $payment->amount }}</p>
 			<div class="modal-footer">
-				@if($payment->status == 'wait for customer authotization')
+				@if($payment->status == 'wait for merchant validation' && $user->email == $payment->merchant_email)
 					{{ Form::submit('Accept',array('class' => 'btn btn-success' , 'style' => 'float:right;'))}}
-					<button onclick="location.href='{{URL::route('payment.cancel',array('id' => $id))}}'" class="btn btn-danger" style="float:left">Decline</button>
 				@endif
-			</div>	
 			{{ Form::token() }}
 			{{ Form::close() }}
+
+			{{ Form::open(array('route'=> array('payment.cancel',$id) , 'method' => 'get' ))}}
+				@if($payment->status == 'wait for merchant validation' && $user->email == $payment->merchant_email)
+					{{ Form::submit('Decline',array('class' => 'btn btn-danger' , 'style' => 'float:left;'))}}
+				@endif
+			{{Form::close()}}
+			</div>	
+			
 		</div>
 	</div>
 

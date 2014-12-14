@@ -23,7 +23,8 @@ class PaymentController extends \BaseController {
 	        $payments = Payment::all();
 	 
 	        foreach($payments as $payment){
-	 			if ($user->email == $payment->merchant_email || $user->email == $payment->customer_email) {
+	 			if (strtolower($user->email) == strtolower($payment->merchant_email) || 
+	 				strtolower($user->email) == strtolower($payment->customer_email)) {
 	            	$response['payments'][] = [
 	                	'id' => $payment->id,
 	                	'merchant_email' => $payment->merchant_email,
@@ -66,15 +67,27 @@ class PaymentController extends \BaseController {
 		$responseBody = '';
 		$data = Input::get('payment');
 
+		$validator = Validator::make($data,
+				array(
+					'merchant_email' => 'required|max:50|email|unique:users',
+					'order_id'	=> 'required',
+					'amount'	=> 'regex:{^[0-9]{1,3}$}'
+				)
+			);
+
+
 		if(empty($data)) {
-				return Response::make('',400);
+			return Response::make('Request body is empty.',400);
+		}
+		if($validator->fails()) {
+			return Response::make("E-mail doesn't exist or amount is negative.", 400);
 		}
 
-		$merchant = User::where('email', '=', $data['merchant_email'])->first();
+		// $merchant = User::where('email', '=', $data['merchant_email'])->first();
 
-		if($merchant == null) {
-			return Response::make("Merchant email doesn't exist.", 400);
-		}
+		// if($merchant == null) {
+		// 	return Response::make("Merchant email doesn't exist.", 400);
+		// }
 
 		$url = Request::url();
 
@@ -154,9 +167,9 @@ class PaymentController extends \BaseController {
 		$user = Auth::user();
 		$result = $payment->cancel($user);
 		if($result) {
-			return ;
+			return Redirect::route('payment.show', array('id' => $id));
 		}
-		return ;
+		return Redirect::route('payment.show', array('id' => $id));
 	}
 
 	/**

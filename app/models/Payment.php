@@ -8,7 +8,7 @@ class Payment extends Eloquent {
 
 	public function user_auth($user) {
 		$result = false;
-		if($user->email == $this->merchant_email) {
+		if(strtolower($user->email) == strtolower($this->merchant_email)) {
 			$result = $this->merchant_validate($user);
 		}
 		else if($this->status == 'wait for customer authotization') {
@@ -22,24 +22,25 @@ class Payment extends Eloquent {
 	}
 
 	public function cancel($user) {
-		$status = 0;
 		if($this->status == 'wait for customer authotization') 
 			$status = 0;
 		else if($this->status == 'wait for merchant validation')
 			$status = 1;
 		else $status = 2;
-		if($user->email == $this->merchant_email || $user->email == $this->customer_email) {
+
+		if(strtolower($user->email) == strtolower($this->merchant_email) || 
+			strtolower($user->email) == strtolower($this->customer_email)) {
 			$this->status = 'cancelled';
 			$this->save();
 			if($status == 0) return true;
 
-			$customer = User::where('email', '=', $this->customer_email)-first();
+			$customer = User::where('email', '=', $this->customer_email)->first();
 			$customer_wallet = Wallet::where('owner_id', '=', $customer->id)->first();
 			$customer_wallet->balance += $this->amount;
 			$customer_wallet->save();
 			if($status == 1) return true;
 
-			$merchant = User::where('email', '=', $this->merchant_email)-first();
+			$merchant = User::where('email', '=', $this->merchant_email)->first();
 			$merchant_wallet = Wallet::where('owner_id', '=', $merchant->id)->first();
 			$merchant_wallet->balance -= $this->amount;
 			$merchant_wallet->save();

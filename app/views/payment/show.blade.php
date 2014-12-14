@@ -23,7 +23,6 @@
 			<div class="modal-footer">
 				@if($payment->status == 'wait for customer authotization')
 					{{ Form::submit('Accept',array('class' => 'btn btn-success' , 'style' => 'float:right;'))}}
-					<button onclick="location.href='{{URL::route('payment.cancel',array('id' => $id))}}'" class="btn btn-danger" style="float:left">Decline</button>
 				@endif
 			</div>
 			{{ Form::token() }}

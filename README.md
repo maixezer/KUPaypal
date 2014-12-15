@@ -1,7 +1,10 @@
 <h1>KUPaypal</h1>
 
 <h3>Description</h3>
-Service for payment from one user to other user. There are two perspective of user, customer and merchant. User want to pay money to merchant by kupaypal. After check out payment from merchant, website will redirect to kupaypal login. User have to have kupaypal account before login then kupaypal will show the order id merchant name total amount and time of purchased, user will choose accepted or decline for confirm that payment. Then kupaypal will redirect user to merchant website. <br>
+Service for payment from one user to other user. There are two perspective of user, customer and merchant. 
+Customer want to pay money to merchant by kupaypal. After check out payment from merchant, website will redirect to kupaypal sign in page. 
+Customer require to have kupaypal account to sign in after that kupaypal will show the order id merchant name total amount and time that payment has created, customer choose accepte or decline a payment. 
+Then kupaypal will redirect customer to merchant website. <br>
 There is not include parts that use bank api to withdraw or deposit money with this service.
 
 <h3>Stakeholder</h3>
@@ -33,8 +36,8 @@ After customer decide to check out via ku paypal, client/merchant's website crea
   Merchant email is exist in kupaypal system.(merchant have an account to validate a payment and get his/her money.)
 
 <h4>Extensions</h4>
-2a. Total amount has negative value
-    .1 Merchant have to resend his/her data to our service.
+  1. Total amount has negative value
+  2. Merchant have to resend his/her data to our service.
 
 <h4>Trigger</h4>
   Customer selects to checkout via "Ku paypal"  

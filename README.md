@@ -19,7 +19,7 @@ There is not include parts that use bank api to withdraw or deposit money with t
 <br><b><i>note:</i></b> we still doesn't have standard for problem.
 
 <h3>Use Case</h3>
-<b><i>[API Specification at github's wiki](https://github.com/maixezer/KUPaypal/wiki/Use-Case) </i></b><br>
+<b><i>[Use case at github's wiki](https://github.com/maixezer/KUPaypal/wiki/Use-Case) </i></b><br>
 
 
 <h3>API Specification</h3>

@@ -1,8 +1,8 @@
 <h1>KUPaypal</h1>
 
 <h3>Description</h3>
-Service for payment from one user to other user. There are two perspective of user, customer and merchant. User want to pay money to merchant by kupaypal. After check out payment from merchant, website will direct to kupaypal login. User have to have kupaypal id before login then kupaypal will show the order id merchant name total amount and time of purchased, user will choose accepted or decline for confirm that payment. Then kupaypal will redirect user to merchant website. <br>
-There is not include parts that use bank api to redeem money from this service or deposite money to this service.
+Service for payment from one user to other user. There are two perspective of user, customer and merchant. User want to pay money to merchant by kupaypal. After check out payment from merchant, website will redirect to kupaypal login. User have to have kupaypal account before login then kupaypal will show the order id merchant name total amount and time of purchased, user will choose accepted or decline for confirm that payment. Then kupaypal will redirect user to merchant website. <br>
+There is not include parts that use bank api to withdraw or deposit money with this service.
 
 <h3>Stakeholder</h3>
 * Merchant
@@ -16,7 +16,7 @@ There is not include parts that use bank api to redeem money from this service o
 <br><b><i>note:</i></b> we still doesn't have standard for problem.
 
 <h3>Use Cases</h3>
-<h2>1. Send a payment</h2>
+<h2>1. Send a payment (Create a payment)</h2>
 After customer decide to check out via ku paypal, client/merchant's website create a json data which contain order id, merchant email and total price to POST in our service.
   * Primary Actor: Merchant
   * Scope: Payment System
@@ -25,42 +25,63 @@ After customer decide to check out via ku paypal, client/merchant's website crea
 
 <h3>Scenario Create payment</h3>
 <h4>Main Success Scenario and steps</h4>
-1. User choose product from Merchant's website.
-2. User proceed and check out.
+1. Customer choose product from Merchant's website.
+2. Customer place order and check out.
 3. Merchant's website will send order id, merchant email, total amount to create payment in our service.
 
+<h4>Precondition</h4>
+  Merchant email is exist in kupaypal system.(merchant have an account to validate a payment and get his/her money.)
+
 <h4>Extensions</h4>
-2a. Total amount is minus value
+2a. Total amount has negative value
     .1 Merchant have to resend his/her data to our service.
 
 <h4>Trigger</h4>
-  User selects to checkout via "Ku paypal"  
+  Customer selects to checkout via "Ku paypal"  
 
 <h4>Guarantee</h4>
-  Merchant create a payment so customer can authorize/accept it.
+  Merchant create a payment so customer can accept it.
 
 
-<h2>2. Accept a payment (funds transferred)</h2>
-After merchant's website create a payment. Customer want to pay that payment, customer just GET a authorize path to accept/authorize payment.
+<h2>2. Accept a payment (funds held wait for merchant validation)</h2>
+After merchant's website create a payment. Customer want to pay that payment, customer just GET a acception path to accept a payment.
   * Primary Actor: Customer
   * Scope: Payment System
   * Level: Very High
-  * Story: Customer authorize a payment, service system hold his/her balance to wait merchant come and validate a payment.
+  * Story: Customer accept a payment, service system hold his/her balance to wait merchant come and validate a payment.
 
 <h3>Scenario Accept a payment</h3>
 <h4>Main Success Scenario and steps</h4>
-1. User retrieve a payment information from merchant's website e.g. list of item, total price.
-2. User authorize a payment.
+1. Customer retrieve a payment information from merchant's website e.g. list of item, total price.
+2. Merchant's website redirect to payment acception page.
+3. Customer accept a payment.
 
 <h4>Precondition</h4>
-  User is logged in to ku paypal.
-  User proceed or checkout from merchant.
+  Customer have an account in kupaypal system.
 
 <h4>Guarantee</h4>
-  User authorize a payment.
+  Customer accept a payment.
+
+<h2>3. Validate a payment (funds tranferred)</h2>
+After customer accept a payment, merchant come to kupaypal system and validate a payment to retrieve money.
+  * Primary Actor: Merchant
+  * Scope: Payment System
+  * Level: Very High
+  * Story: Merchant validate a payment and retrieve money to account.
+
+<h3>Scenario Accept a payment</h3>
+<h4>Main Success Scenario and steps</h4>
+1. Merchant go to validate path (/payment/{id}/validate) to get validation page.
+2. Merchant validate a payment.
+
+<h4>Precondition</h4>
+  Customer already accept a payment.
+
+<h4>Guarantee</h4>
+  Merchant validate a payment.
 
 
-<h2>3. Reverse/chargeback a payment</h2>
+<h2>4. Reverse/chargeback a payment</h2>
 If customer or merchant found that payment information is not correct or have a problem, they want to cancel/reverse this payment.
   * Primary Actor: Customer or Merchant
   * Scope: Payment System
@@ -85,7 +106,7 @@ Admin of website do not permit to charge back
 <h4>Guarantee</h4>
   Customer can get his/her money back.
   
-<h2>4. User registration</h2>
+<h2>5. User registration</h2>
  User want to pay via this service, they need to register.
   * Primary Actor: Customer
   * Scope: Account Management
@@ -112,7 +133,7 @@ Admin of website do not permit to charge back
 <h4>Guarantee</h4>
   User becomes a registered user.
 
-<h2>5. User Log In</h2>
+<h2>6. User Log In</h2>
  Customer want to access the system. Customer can retrieve his/her profile and balance.
   * Primary Actor: Customer
   * Scope: Account management
@@ -148,14 +169,15 @@ User can see his/her own information in paypal.
 <h2> Scenario Login failed</h2>
 <h3>Login Failed</h3>
 <h4>Precondition</h4>
--The user provides invalid login parameters
+- The user provides invalid login parameters
 Precondition should be identical with the condition of the extension point
 <h4>Main success scenario</h4>
 1.System redirects the User to the Login page
 2.System informs the User that he/she typed a non-registered user name
 <h3>Login without Registration</h3>
 <h4>Precondition</h4>
--The User typed a non-registered user name
+- The User typed a non-registered user name
+- 
 Precondition should refine the precondition of Login Failed
 <h4>Main success scenario</h4>
 1. System redirects the User to the Login page

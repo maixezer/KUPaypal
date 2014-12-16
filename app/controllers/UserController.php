@@ -82,9 +82,10 @@ class UserController extends \BaseController {
 				$user->address  = Input::get('address');
 				$user->phone  = Input::get('phone');
 				$user->date_of_birth = $dob->format('Y-m-d');
+				$user->urlcallback = Input::get('urlcallback');
 				$user->save();
 
-				return Redirect::route('users.index');
+				return Redirect::route('users.profile');
 
 			}
 
@@ -107,6 +108,7 @@ class UserController extends \BaseController {
 	 *			Alternative Redirect to sign in page.
 	 */
 	public function postSignIn() {
+		var_dump(Request::header('Referer'));
 		$validator = Validator::make(Input::all(),
 			array(
 				'email' 	=> 'required|email|exists:users',
@@ -134,7 +136,7 @@ class UserController extends \BaseController {
 
 				Session::put('user' , Auth::user() );
 
-				return Redirect::route('users.profile');
+				return Redirect::intended('/');
 			} else {
 				return Redirect::route('user-sign-in')->with('fail' , 'User or Password are wrong');
 			}
@@ -188,7 +190,9 @@ class UserController extends \BaseController {
 					'email' 	=> Input::get('email'),
 					'password'	=> Hash::make(Input::get('password')),
 					'created_at' 	=> $date,
-					'updated_at' 	=> $date
+					'updated_at' 	=> $date,
+					'urlcallback' 	=> Input::get('urlcallback'), 
+					'role'		=> 'user'
 				)
 			);
 

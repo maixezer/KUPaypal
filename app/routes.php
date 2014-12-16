@@ -15,11 +15,15 @@ Route::get('/', array(
 	'as' => 'home',
 	'uses' => 'HomeController@home')
 );
-			
+
+/*
+	Payment
+*/
 Route::post('/payment', array(
 	'as' => 'payment.store',
 	'uses' => 'PaymentController@store'
-));
+));			
+
 Route::get('/payment/{payment}/status', array(
 	'as' => 'payment.status',
 	'uses' => 'PaymentController@getStatus'
@@ -114,11 +118,14 @@ Route::get('/payment/{payment}/status', array(
 			'uses' => 'WalletController@deposit'
 		));
 
-		//Route::resource('payment', 'PaymentController');
-
 		/*
 			Payment group
 		*/
+		Route::get('payment/list',array(
+			'as' => 'payment.list',
+			'uses' => 'PaymentController@showList'
+		));
+
 		Route::get('/payment', array(
 			'as' => 'payment.index',
 			'uses' => 'PaymentController@index'
@@ -150,8 +157,7 @@ Route::get('/payment/{payment}/status', array(
 		Route::get('payment/{payment}/validate', array(
 			'as' => 'payment.getValidate',
 			'uses' => 'PaymentController@getValidate'
-		));
-
+		));		
 		
 	});
 

@@ -5,7 +5,15 @@
 		    $result = explode('-' , $user->date_of_birth);
 		?>
 
-		{{ Form::open(array('route' => array('users.update') , 'method' => 'put')) }}
+<div class="modal-dialog" style="margin-top: 150px;" >
+     <div class="modal-content">
+
+         <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onClick="">&times;</button>
+	          <h4 class="modal-title">KUPayPal Profile: {{ $user->first_name.' '.$user->last_name }}</h4>
+        </div>
+        <div class="modal-body">
+			{{ Form::open(array('route' => array('users.update') , 'method' => 'put')) }}
 	        
 		    	  <span > Email</span>
 		          <input type="email" class="form-control" placeholder="example@example.com" name="email" value="{{ $user->email }}" disabled/>
@@ -54,12 +62,19 @@
 						<p class="imt">{{ $errors->first('phone') }}</p>
 				  @endif
 		          </br></br>
-		          
-				  {{ Form::submit('Update Profile',array('class' => 'btn btn-success'))}}
 
+		          <span>Callback URL </span>
+		          <input type="text" class="form-control" name="urlcallback" value="{{ $user->urlcallback }}"/> 
+		          <br>
+				  {{ Form::submit('Update Profile',array('class' => 'btn btn-success'))}}
+				  <span style="float:right;"><a href="{{URL::route('users.profile')}}"> Back </a></span>
 	       
-	        {{ Form::token() }}
-	     {{ Form::close() }}
+	        	{{ Form::token() }}
+	     		{{ Form::close() }}
+		</div>
+	</div>
+</div>
+
 	<style type="text/css">
     	.imt {
     		color: red;

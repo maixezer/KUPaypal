@@ -43,6 +43,9 @@
 				            			</tr>
 									</tbody>
 								</table>
+								<button onclick="location.href='{{ URL::route('users.edit') }}'" class="btn btn-primary" style="float:left"> Edit Profile </button>
+								&nbsp;&nbsp;
+								<button onclick="location.href='{{ URL::route('payment.list') }}'" class="btn btn-primary" > Show payment </button>
 								<button onclick="location.href='{{ URL::route('user-sign-out') }}'" class="btn btn-primary" style="float:right"> Sign Out </button>
 				            </div>
 				        </div>

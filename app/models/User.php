@@ -22,7 +22,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	protected $table = 'users';
 
 	protected $fillable = array('first_name','last_name','date_of_birth',
-		'phone','address','email','password');
+		'phone','address','email','password', 'role');
 
 	protected $primaryKey = 'id';
 	

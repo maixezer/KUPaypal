@@ -57,7 +57,7 @@ return array(
 			'host'      => 'localhost',
 			'database'  => 'kupaypal',
 			'username'  => 'root',
-			'password'  => 'maixezer',
+			'password'  => 'jforceza',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

@@ -33,14 +33,14 @@
 
 			  </br>
 			  <span class="imt">*</span><span > First Name</span>
-	          <input type="text" class="form-control" name="first_name"/>
+	          <input type="text" class="form-control" name="first_name" {{ (Input::old('first_name')) ? ' value="' . e(Input::old('first_name')) . '"' : '' }}/>
 	          @if($errors->has('first_name'))
 					<p class="imt">{{ $errors->first('first_name') }}</p>
 			  @endif 
 	          </br>
 
 	          <span class="imt">*</span><span > Last Name</span>
-	          <input type="text" class="form-control" name="last_name"/> 
+	          <input type="text" class="form-control" name="last_name" {{ (Input::old('last_name')) ? ' value="' . e(Input::old('last_name')) . '"' : '' }}/> 
 	          @if($errors->has('last_name'))
 					<p class="imt">{{ $errors->first('last_name') }}</p>
 			  @endif
@@ -71,10 +71,13 @@
 			  @endif
 	          </br>
 
-	          <span class="imt">*</span><span> Phone Number </span> <input type="text" class="form-control" name="phone"/> 
+	          <span class="imt">*</span><span> Phone Number </span> <input type="text" class="form-control" name="phone" {{ (Input::old('phone')) ? ' value="' . e(Input::old('phone')) . '"' : '' }}/> 
 	          @if($errors->has('phone'))
 					<p class="imt">{{ $errors->first('phone') }}</p>
 			  @endif
+			  <span>Callback URL </span>
+		          <input type="text" class="form-control" name="urlcallback" {{ (Input::old('urlcallback')) ? ' value="' . e(Input::old('urlcallback')) . '"' : '' }}/> 
+		      <br>
 			</div>
           	<div class="modal-footer">
 	       		{{ Form::submit('Submit',array('class' => 'btn btn-success' , 'style' => 'float:left;'))}}

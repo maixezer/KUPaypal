@@ -29,6 +29,15 @@ Route::get('/payment/{payment}/status', array(
 	'uses' => 'PaymentController@getStatus'
 ));
 
+Route::get('/payment/test', array(
+	'as' => 'payment.test',
+	'uses' => 'TestController@getTest'
+));
+Route::post('payment/test', array(
+	'as' => 'payment.store.test',
+	'uses' => 'TestController@postTest'
+));
+
 	/*
 		Unauthenticated gro//up
 	*/

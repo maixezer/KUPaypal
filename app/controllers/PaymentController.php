@@ -96,7 +96,7 @@ class PaymentController extends \BaseController {
 		);
 
 		if($id>0) {
-			$response = Response::make('', 201);
+			$response = Response::make($data['order_id'], 201);
 			$response->header('Location', $url.'/'.$id);
 			return $response;
 		}
@@ -163,12 +163,15 @@ class PaymentController extends \BaseController {
 		$payment = Payment::find($id);
 		$user = Auth::user();
 		$result = $payment->customer_accept($user);
-		$merchant = User::where('email','=',$payment->merchant_email)->first();
 
-		if($result) {
-			return Redirect::to($merchant->urlcallback.$id);
+		if($result == 0) return Redirect::route('payment.getAccept', array('id' => $id))->with('fail', 'Money not enough.');
+
+		$merchant = User::where('email','=',$payment->merchant_email)->first();
+		if($merchant->email == 'standalone_merchant@test.com') {
+			Auth::logout();
+			return Redirect::route('payment.getValidate', array('id' => $id));
 		}
-		return Redirect::route('payment.getAccept', array('id' => $id));
+		return Redirect::to($merchant->urlcallback.$payment->order_id);
 	}
 
 	/**

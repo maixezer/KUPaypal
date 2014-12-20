@@ -79,8 +79,8 @@ class Payment extends Eloquent {
 			$this->save();
 			$customer_wallet->balance -= $this->amount;
 			$customer_wallet->save();
-			return true;
+			return 1;
 		}
-		return false;
+		return 0;
 	}
 }

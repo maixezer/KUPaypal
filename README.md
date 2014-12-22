@@ -25,8 +25,8 @@ There is not include parts that use bank api to withdraw or deposit money with t
 <b><i>[API Specification at github's wiki](https://github.com/maixezer/KUPaypal/wiki/API-Specification) </i></b> <br>
 
 <h3>How this service work</h3>
-Situation: Customer come to a web store, buy something and want to pay via this service.
-1. Customer choose to pay with KUPaypal service, web store will use HTTP Post method to create a payment and redirect customer to an accept page as refer in image below.
+Situation: Customer come to a web store, buy something and want to pay via this service. <br><br>
+1. Customer choose to pay with KUPaypal service, web store will use HTTP Post method to create a payment and redirect  customer to an accept page as refer in image below.
 <h3>Customer pay a payment</h3>
 ![Alt text](https://github.com/maixezer/KUPaypal/blob/master/pic/sequenceUser.png "Optional title")
 

@@ -29,13 +29,13 @@ There is not include parts that use bank api to withdraw or deposit money with t
 This part is reference of my research through paypal system.
 I found this [link](https://www.paypal.com/cy/webapps/mpp/ua/servicedescription-full) is really helpful.
 
-<h3>Picture</h3>
+<h3>Customer pay a payment</h3>
 ![Alt text](https://github.com/maixezer/KUPaypal/blob/master/pic/sequenceUser.png "Optional title")
 
-<h3>Picture</h3>
+<h3>Merchant validaet a payment</h3>
 ![Alt text](https://github.com/maixezer/KUPaypal/blob/master/pic/sequenceMerchant.png "Optional title")
 
-<h3>Picture</h3>
+<h3>State of System</h3>
 ![Alt text](https://github.com/maixezer/KUPaypal/blob/master/pic/state.png "Optional title")
 
 <h2>Developer</h2>

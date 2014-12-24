@@ -5,6 +5,7 @@ Service for payment from one user to other user. There are two perspective of us
 Customer want to pay money to merchant by kupaypal. After check out payment from merchant, website will redirect to kupaypal sign in page. 
 Customer require to have kupaypal account to sign in after that kupaypal will show the order id merchant name total amount and time that payment has created, customer choose accepte or decline a payment. 
 After customer accept a payment, service will redirect to callback path provide by merchant with order_id e.g. http://sabaii.com/order/+1 => http://sabaii.com/order/1<br>
+For authetication, service use basic authetication which laravel provided with laravel hash encryption.<br>
 There is not include parts that use bank api to withdraw or deposit money with this service.
 
 <h3>Stakeholder</h3>
